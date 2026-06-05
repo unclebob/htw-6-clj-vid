@@ -48,6 +48,34 @@ branch name: swarmforge-architect
 
 Summary: Architect isolated seeded placement ordering behind a dedicated namespace and added lightweight architecture plus separate property checks for task1 setup.
 
+## 2026-06-05 14:33:11 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task2-movement
+branch name: swarmforge-cleaner
+10-character commit hash: c79511601b
+```
+
+Reason for note: message arrived while task1-setup work was in progress; processing after completing and sending the required task1-setup handoff.
+
+## 2026-06-05 14:33:11 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task2-movement
+branch name: swarmforge-cleaner
+10-character commit hash: c79511601b
+```
+
+Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+
 ## 2026-06-05 14:00:26 CDT - Received Handoff
 
 Message:
