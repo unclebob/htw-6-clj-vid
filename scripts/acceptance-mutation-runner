@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bb scripts/acceptance_mutation_runner.clj "$@"

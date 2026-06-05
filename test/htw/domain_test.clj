@@ -28,21 +28,20 @@
   (is (= 20 (count cave/rooms)))
   (is (every? #(= 3 (count (cave/exits %))) cave/rooms))
   (is (cave/bidirectional?))
-  (is (not-any? #(contains? (set (cave/exits %)) %) cave/rooms))
+  (is (not-any? cave/self-exiting? cave/rooms))
   (is (= (set cave/rooms) (cave/reachable-from 1))))
 
 (deftest seeded-placement-uses-distinct-valid-rooms
   (doseq [seed [1001 2002 3003 1973]]
     (testing (str "seed " seed)
       (let [state (game/start-game seed)]
-        (is (contains? (set cave/rooms) (:player-room state)))
-        (is (contains? (set cave/rooms) (:wumpus-room state)))
+        (is (cave/room? (:player-room state)))
+        (is (cave/room? (:wumpus-room state)))
         (is (= 2 (count (:pit-rooms state))))
         (is (= 2 (count (:bat-rooms state))))
         (is (= 5 (count (game/hazard-rooms state))))
         (is (= 6 (count (game/occupied-rooms state))))
-        (is (empty? (filter (complement (set cave/rooms))
-                            (game/occupied-rooms state))))))))
+        (is (every? cave/room? (game/occupied-rooms state)))))))
 
 (deftest player-starts-away-from-hazards
   (doseq [seed [404 505 606]]
