@@ -225,3 +225,31 @@ branch name: swarmforge-architect
 ```
 
 Summary: Architect merged task2 movement, kept text-shaped wake choices at the acceptance boundary, and broadened movement/warning property coverage.
+
+## 2026-06-05 14:40:02 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task3-shooting
+branch name: swarmforge-cleaner
+10-character commit hash: 3a82032e3c
+```
+
+Reason for note: message arrived while task2-movement work was in progress; processing after completing and sending the required task2-movement handoff.
+
+## 2026-06-05 14:40:02 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task3-shooting
+branch name: swarmforge-cleaner
+10-character commit hash: 3a82032e3c
+```
+
+Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
