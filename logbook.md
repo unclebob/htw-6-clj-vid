@@ -209,3 +209,19 @@ branch name: swarmforge-cleaner
 ```
 
 Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+
+## 2026-06-05 14:38:59 CDT
+
+Sent handoff to hardender.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: task2-movement
+branch name: swarmforge-architect
+10-character commit hash: 8868e92fd3
+```
+
+Summary: Architect merged task2 movement, kept text-shaped wake choices at the acceptance boundary, and broadened movement/warning property coverage.
