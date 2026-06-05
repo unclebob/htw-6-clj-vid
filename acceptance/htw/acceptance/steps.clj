@@ -46,6 +46,9 @@
   (when-not (some #{line} (:output @world))
     (fail! (str "output missing " label ": " line))))
 
+(defn- active-game [world]
+  (or (:game @world) (:custom-game @world)))
+
 (defn- seed-from-start-step [expanded]
   (when-let [[_ seed] (re-matches #"a game is started with seed ([0-9]+)" expanded)]
     (parse-int seed)))
@@ -100,15 +103,50 @@
     (when-not (cave/room? (:player-room (:game @world)))
       (fail! "player does not occupy one valid room"))
 
+    "the player room is <player_room>"
+    (assert= (parse-int (:player_room example))
+             (:player-room (active-game world))
+             "player room")
+
     "the Wumpus occupies one room"
     (when-not (cave/room? (:wumpus-room (:game @world)))
       (fail! "Wumpus does not occupy one valid room"))
 
+    "the Wumpus room is <wumpus_room>"
+    (assert= (parse-int (:wumpus_room example))
+             (:wumpus-room (active-game world))
+             "Wumpus room")
+
+    "the Wumpus room is <expected_wumpus_room>"
+    (assert= (parse-int (:expected_wumpus_room example))
+             (:wumpus-room (active-game world))
+             "Wumpus room")
+
     "there are 2 pit rooms"
     (assert= 2 (count (:pit-rooms (:game @world))) "pit room count")
 
+    "the pit rooms are <pit_rooms>"
+    (assert= (set (parse-int-list (:pit_rooms example)))
+             (:pit-rooms (active-game world))
+             "pit rooms")
+
+    "the pit rooms are <expected_pit_rooms>"
+    (assert= (set (parse-int-list (:expected_pit_rooms example)))
+             (:pit-rooms (active-game world))
+             "pit rooms")
+
     "there are 2 bat rooms"
     (assert= 2 (count (:bat-rooms (:game @world))) "bat room count")
+
+    "the bat rooms are <bat_rooms>"
+    (assert= (set (parse-int-list (:bat_rooms example)))
+             (:bat-rooms (active-game world))
+             "bat rooms")
+
+    "the bat rooms are <expected_bat_rooms>"
+    (assert= (set (parse-int-list (:expected_bat_rooms example)))
+             (:bat-rooms (active-game world))
+             "bat rooms")
 
     "all occupied rooms are distinct"
     (assert= 6 (count (game/occupied-rooms (:game @world))) "occupied room count")

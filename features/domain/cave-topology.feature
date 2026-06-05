@@ -1,3 +1,8 @@
+# mutation-stamp: sha256=a916b9e95e16088b2a7ffd0e327bfd4238554eef13500dde1ea9d8c0d338c16d
+# acceptance-mutation-manifest-begin
+# {"version":1,"tested_at":"2026-06-05T19:45:56Z","feature_name":"Cave topology","feature_path":"features/domain/cave-topology.feature","background_hash":"13d117037c0f5f98733b41ac1c2391a100cd6a00f807de23835bb9e0ec63dd85","implementation_hash":"unknown","scenarios":[{"index":0,"name":"Cave topology 001: canonical room exits","scenario_hash":"c998bd95707faf7304a4cbadfce3213f5d940b2d2f7d742c35c86b62bbc54d9a","mutation_count":40,"result":{"Total":40,"Killed":40,"Survived":0,"Errors":0},"tested_at":"2026-06-05T19:39:51Z"}]}
+# acceptance-mutation-manifest-end
+
 Feature: Cave topology
 
   Background:
