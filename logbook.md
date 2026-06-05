@@ -268,6 +268,20 @@ branch name: swarmforge-cleaner
 
 Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
 
+## 2026-06-05 15:15:52 CDT - Sent QA Complete Handoff
+
+Message sent to specifier, coder, cleaner, architect, and hardender:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task3-shooting
+branch name: swarmforge-QA
+10-character commit hash: 9e1c64a0b2
+```
+
+Summary: QA completed final verification for task3-shooting and committed scripted UI checks for movement and shooting behavior.
+
 ## 2026-06-05 14:33:25 CDT - Received handoff from architect
 
 Complete handoff message received:
