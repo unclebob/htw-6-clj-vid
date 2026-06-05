@@ -268,6 +268,22 @@ branch name: swarmforge-cleaner
 
 Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
 
+## 2026-06-05 14:45:23 CDT
+
+Sent handoff to hardender.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: task3-shooting
+branch name: swarmforge-architect
+10-character commit hash: 85d0298cce
+```
+
+Summary: Architect merged task3 shooting, preserved structured domain choices, extracted arrow traversal into `htw.arrow`, and added arrow traversal property coverage.
+
 ## 2026-06-05 14:34:58 CDT
 
 Sent handoff to architect.
