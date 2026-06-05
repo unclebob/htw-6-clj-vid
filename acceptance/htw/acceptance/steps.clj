@@ -246,6 +246,39 @@
     "the Wumpus wakes"
     (swap! world assoc :custom-game (game/wake-wumpus (:custom-game @world)))
 
+    "the player has <starting_arrows> arrows"
+    (swap! world assoc-in [:custom-game :arrows] (parse-int (:starting_arrows example)))
+
+    "invalid arrow movement will choose room <deviation_room>"
+    (swap! world assoc-in [:custom-game :arrow-deviation-room] (parse-int (:deviation_room example)))
+
+    "the player shoots path <path>"
+    (swap! world assoc :custom-game
+           (game/shoot-arrow (:custom-game @world)
+                             (parse-int-list (:path example))))
+
+    "the player tries to shoot path <path>"
+    (swap! world assoc :custom-game
+           (game/try-shoot-arrow
+             (:custom-game @world)
+             (if (= "none" (:path example)) [] (parse-int-list (:path example)))))
+
+    "the arrow visits rooms <visited_rooms>"
+    (assert= (parse-int-list (:visited_rooms example))
+             (:arrow-visits (:custom-game @world))
+             "arrow visits")
+
+    "the player has <remaining_arrows> arrows"
+    (assert= (parse-int (:remaining_arrows example))
+             (:arrows (:custom-game @world))
+             "remaining arrows")
+
+    "the game is won"
+    (assert= :won (:status (:custom-game @world)) "game status")
+
+    "the shot is rejected with message <message>"
+    (assert= (:message example) (:error (:custom-game @world)) "shot rejection")
+
     "both games have the same player room"
     (assert= (:player-room (:game @world))
              (:player-room (:second-game @world))

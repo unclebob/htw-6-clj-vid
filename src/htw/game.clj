@@ -1,10 +1,15 @@
 (ns htw.game
-  (:require [htw.cave :as cave]
+  (:require [htw.arrow :as arrow]
+            [htw.cave :as cave]
             [htw.placement :as placement]))
 
 (def pit-message "YYYIIIIEEEE . . . FELL IN PIT")
 (def bat-message "ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!")
 (def invalid-move-message "CAN'T MOVE THERE")
+(def wumpus-hit-message "AHA! YOU GOT THE WUMPUS!")
+(def self-hit-message "OOPS! ARROW GOT YOU!")
+(def out-of-arrows-message "YOU RAN OUT OF ARROWS")
+(def invalid-shot-message "CAN'T SHOOT THERE")
 
 (defn- place-entities [room-order]
   (let [[player wumpus pit-a pit-b bat-a bat-b] room-order]
@@ -28,7 +33,8 @@
       (update :pit-rooms #(or % #{}))
       (update :bat-rooms #(or % #{}))
       (update :messages #(or % []))
-      (update :status #(or % :in-progress))))
+      (update :status #(or % :in-progress))
+      (update :arrows #(or % 5))))
 
 (defn start-game [seed]
   (place-entities (placement/seeded-room-order seed)))
@@ -116,3 +122,41 @@
 
 (defn move-player [state destination-room]
   (try-move-player state destination-room))
+
+(defn- legal-shot-length? [path]
+  (<= 1 (count path) 5))
+
+(defn- arrow-hit-result [state visits status message]
+  (-> state
+      (assoc :arrow-visits visits
+             :status status)
+      (append-message message)))
+
+(defn- missed-arrow-result [state visits]
+  (let [spent (update state :arrows dec)
+        woken (wake-wumpus spent)
+        exhausted? (and (zero? (:arrows woken))
+                        (= :in-progress (:status woken)))]
+    (cond-> (assoc woken :arrow-visits visits)
+      exhausted? (assoc :status :lost)
+      exhausted? (append-message out-of-arrows-message))))
+
+(defn- shot-result [state visits]
+  (cond
+    (some #{(:wumpus-room state)} visits)
+    (arrow-hit-result state visits :won wumpus-hit-message)
+
+    (some #{(:player-room state)} visits)
+    (arrow-hit-result state visits :lost self-hit-message)
+
+    :else
+    (missed-arrow-result state visits)))
+
+(defn try-shoot-arrow [state path]
+  (let [state (normalize-state state)]
+    (if-not (legal-shot-length? path)
+      (assoc state :error invalid-shot-message)
+      (shot-result state (arrow/visits state path)))))
+
+(defn shoot-arrow [state path]
+  (try-shoot-arrow state path))

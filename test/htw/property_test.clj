@@ -1,5 +1,6 @@
 (ns htw.property-test
   (:require [clojure.test :refer [deftest is testing]]
+            [htw.arrow :as arrow]
             [htw.cave :as cave]
             [htw.game :as game]
             [htw.placement :as placement]))
@@ -54,3 +55,12 @@
                                         #{})]
         (is (= ["I SMELL A WUMPUS" "I FEEL A DRAFT"]
                (game/turn-warnings state)))))))
+
+(deftest straight-arrow-path-properties
+  (doseq [start-room cave/rooms
+          first-room (cave/exits start-room)
+          second-room (cave/exits first-room)
+          :let [state (game/configured-game start-room 20 #{} #{})
+                path [first-room second-room]]]
+    (testing (str start-room " -> " path)
+      (is (= path (arrow/visits state path))))))
