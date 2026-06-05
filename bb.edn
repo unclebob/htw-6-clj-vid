@@ -1,0 +1,6 @@
+{:paths ["src" "test" "acceptance"]
+ :tasks
+ {test {:doc "Run unit tests"
+        :task (exec 'htw.test-runner/-main)}
+  acceptance {:doc "Run generated acceptance tests"
+              :task (shell "./scripts/acceptance.sh")}}}

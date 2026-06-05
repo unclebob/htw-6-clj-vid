@@ -55,5 +55,5 @@ Feature: Entity placement
     Examples:
       | player_room | wumpus_room | pit_rooms | bat_rooms | wumpus_count | pit_count | bat_count |
       | 1           | 2           | 3, 4      | 5, 6      | 1            | 0         | 1         |
-      | 10          | 11          | 2, 18     | 9, 13     | 1            | 0         | 1         |
+      | 10          | 11          | 2, 18     | 9, 13     | 1            | 1         | 1         |
       | 20          | 1           | 13, 16    | 18, 19    | 0            | 2         | 1         |
