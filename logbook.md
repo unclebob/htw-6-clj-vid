@@ -74,6 +74,20 @@ branch name: master
 
 Summary: Task 2 movement, warning, hazard, and Wumpus wake specifications and end-to-end QA suite are ready for coder review.
 
+## 2026-06-05 14:05:57 CDT - sent handoff to coder
+
+Complete handoff message:
+
+```text
+Re-read your role and constitution.
+sender role: specifier
+specifier handoff name: task3-shooting
+branch name: master
+10-character commit hash: 7b4df4d6de
+```
+
+Summary: Task 3 crooked-arrow shooting specifications and end-to-end QA suite are ready for coder review.
+
 ## 2026-06-05 14:08:56 CDT - Sent Handoff
 
 Message:
@@ -161,6 +175,34 @@ branch name: swarmforge-cleaner
 ```
 
 Summary: Cleaner completed structure-preserving cleanup for task1 setup and forwarded the branch for architectural review.
+
+## 2026-06-05 14:21:31 CDT - Sent Handoff
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: task3-shooting
+branch name: swarmforge-coder
+10-character commit hash: 0a0fdf3729
+```
+
+Summary: Task 3 crooked-arrow shooting, random deviation, self-hit, Wumpus wake on miss, arrow exhaustion, unit tests, and acceptance handlers are ready for cleaner review.
+
+## 2026-06-05 14:22:21 CDT - Processing Queued Handoff
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: specifier
+specifier handoff name: task4-game-loop
+branch name: master
+10-character commit hash: 89056ef788
+```
+
+Reason: Processing the next queued specifier handoff after completing and sending the Task 3 cleaner handoff.
 
 ## 2026-06-05 14:25:56 CDT
 
@@ -268,6 +310,98 @@ branch name: swarmforge-cleaner
 
 Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
 
+## 2026-06-05 14:34:58 CDT
+
+Sent handoff to architect.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task3-shooting
+branch name: swarmforge-cleaner
+10-character commit hash: pending commit
+```
+
+Summary: Cleaner completed structure-preserving cleanup for task3 shooting and forwarded the branch for architectural review.
+
+## 2026-06-05 14:36:09 CDT
+
+Processing queued handoff from coder.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: task4-game-loop
+branch name: swarmforge-coder
+10-character commit hash: fa8cb85188
+```
+
+Reason: Task3 cleanup and required architect handoff are complete; processing queued messages in sorted order.
+
+## 2026-06-05 14:38:59 CDT
+
+Sent handoff to hardender.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: task2-movement
+branch name: swarmforge-architect
+10-character commit hash: 8868e92fd3
+```
+
+Summary: Architect merged task2 movement, kept text-shaped wake choices at the acceptance boundary, and broadened movement/warning property coverage.
+
+## 2026-06-05 14:39:44 CDT
+
+Sent handoff to architect.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task4-game-loop
+branch name: swarmforge-cleaner
+10-character commit hash: pending commit
+```
+
+Summary: Cleaner completed structure-preserving cleanup for task4 game loop and forwarded the branch for architectural review.
+
+## 2026-06-05 14:40:02 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task3-shooting
+branch name: swarmforge-cleaner
+10-character commit hash: 3a82032e3c
+```
+
+Reason for note: message arrived while task2-movement work was in progress; processing after completing and sending the required task2-movement handoff.
+
+## 2026-06-05 14:40:02 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task3-shooting
+branch name: swarmforge-cleaner
+10-character commit hash: 3a82032e3c
+```
+
+Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+
 ## 2026-06-05 14:45:23 CDT
 
 Sent handoff to hardender.
@@ -308,66 +442,6 @@ sender role: cleaner
 specifier handoff name: task4-game-loop
 branch name: swarmforge-cleaner
 10-character commit hash: 9d0e0fd14c
-```
-
-Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
-
-## 2026-06-05 14:34:58 CDT
-
-Sent handoff to architect.
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task3-shooting
-branch name: swarmforge-cleaner
-10-character commit hash: pending commit
-```
-
-Summary: Cleaner completed structure-preserving cleanup for task3 shooting and forwarded the branch for architectural review.
-
-## 2026-06-05 14:38:59 CDT
-
-Sent handoff to hardender.
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: architect
-specifier handoff name: task2-movement
-branch name: swarmforge-architect
-10-character commit hash: 8868e92fd3
-```
-
-Summary: Architect merged task2 movement, kept text-shaped wake choices at the acceptance boundary, and broadened movement/warning property coverage.
-
-## 2026-06-05 14:40:02 CDT
-
-Queued message processed:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task3-shooting
-branch name: swarmforge-cleaner
-10-character commit hash: 3a82032e3c
-```
-
-Reason for note: message arrived while task2-movement work was in progress; processing after completing and sending the required task2-movement handoff.
-
-## 2026-06-05 14:40:02 CDT
-
-Received handoff:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task3-shooting
-branch name: swarmforge-cleaner
-10-character commit hash: 3a82032e3c
 ```
 
 Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.

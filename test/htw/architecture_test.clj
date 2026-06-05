@@ -9,7 +9,11 @@
                        "slurp"
                        "spit"
                        "System/exit"
-                       "htw.acceptance"]})
+                       "htw.acceptance"
+                       "htw.ui"]
+   "src/htw/arrow.clj" ["htw.game"
+                        "htw.ui"
+                        "htw.acceptance"]})
 
 (defn- file-contains? [path token]
   (str/includes? (slurp path) token))
