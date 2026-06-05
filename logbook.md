@@ -382,6 +382,20 @@ branch name: swarmforge-QA
 
 Action taken: re-read architect role and constitution; merged the named QA state into the architect branch and did not apply architect-specific work to this QA handoff.
 
+## 2026-06-05 15:42:54 CDT
+
+Received QA handoff:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 27d865d235
+```
+
+Action taken: re-read architect role and constitution; merged the named QA state into the architect branch and did not apply architect-specific work to this QA handoff.
+
 ## 2026-06-05 15:19:12 CDT
 
 Received QA handoff:
