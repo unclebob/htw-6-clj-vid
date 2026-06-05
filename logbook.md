@@ -284,6 +284,34 @@ branch name: swarmforge-architect
 
 Summary: Architect merged task3 shooting, preserved structured domain choices, extracted arrow traversal into `htw.arrow`, and added arrow traversal property coverage.
 
+## 2026-06-05 14:46:11 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task4-game-loop
+branch name: swarmforge-cleaner
+10-character commit hash: 9d0e0fd14c
+```
+
+Reason for note: message arrived while task3-shooting work was in progress; processing after completing and sending the required task3-shooting handoff.
+
+## 2026-06-05 14:46:11 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task4-game-loop
+branch name: swarmforge-cleaner
+10-character commit hash: 9d0e0fd14c
+```
+
+Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+
 ## 2026-06-05 14:34:58 CDT
 
 Sent handoff to architect.
