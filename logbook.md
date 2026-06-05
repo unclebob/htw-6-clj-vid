@@ -352,6 +352,22 @@ branch name: swarmforge-cleaner
 
 Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
 
+## 2026-06-05 14:55:35 CDT
+
+Sent handoff to hardender.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-architect
+10-character commit hash: ccdf288aa0
+```
+
+Summary: Architect merged shell launch and added architecture coverage that keeps CLI dependencies out of domain and UI namespaces.
+
 ## 2026-06-05 14:50:36 CDT
 
 Sent handoff to hardender.
