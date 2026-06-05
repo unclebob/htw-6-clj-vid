@@ -47,13 +47,13 @@
   (is (= [10 2 9 11] (game/wumpus-wake-options (configured-game 1 10 [] []))))
   (is (= [20 13 16 19] (game/wumpus-wake-options (configured-game 5 20 [] []))))
   (let [lost (game/move-player
-               (configured-game 1 2 [14 15] [16 17] {:wumpus-wake-choice "stay"})
+               (configured-game 1 2 [14 15] [16 17] {:wumpus-wake-choice :stay})
                2)
         escaped (game/move-player
-                  (configured-game 1 2 [14 15] [16 17] {:wumpus-wake-choice "move to 3"})
+                  (configured-game 1 2 [14 15] [16 17] {:wumpus-wake-choice 3})
                   2)
         immune (game/wake-wumpus
-                 (configured-game 1 10 [2 14] [9 17] {:wumpus-wake-choice "move to 2"}))]
+                 (configured-game 1 10 [2 14] [9 17] {:wumpus-wake-choice 2}))]
     (is (= :lost (:status lost)))
     (is (= 2 (:wumpus-room lost)))
     (is (= :in-progress (:status escaped)))

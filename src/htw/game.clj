@@ -1,12 +1,11 @@
 (ns htw.game
-  (:require [clojure.string :as str]
+  (:require [htw.arrow :as arrow]
             [htw.cave :as cave]
             [htw.placement :as placement]))
 
 (def pit-message "YYYIIIIEEEE . . . FELL IN PIT")
 (def bat-message "ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!")
 (def invalid-move-message "CAN'T MOVE THERE")
-(def move-choice-prefix "move to ")
 (def wumpus-hit-message "AHA! YOU GOT THE WUMPUS!")
 (def self-hit-message "OOPS! ARROW GOT YOU!")
 (def out-of-arrows-message "YOU RAN OUT OF ARROWS")
@@ -69,16 +68,8 @@
 (defn- append-message [state message]
   (update state :messages (fnil conj []) message))
 
-(defn- move-choice? [choice]
-  (and (string? choice)
-       (str/starts-with? choice move-choice-prefix)))
-
-(defn- parse-move-choice [choice]
-  (Long/parseLong (subs choice (count move-choice-prefix))))
-
 (defn- wake-choice-handlers [state]
-  [[#(= "stay" %) (constantly (:wumpus-room state))]
-   [move-choice? parse-move-choice]
+  [[#(= :stay %) (constantly (:wumpus-room state))]
    [integer? identity]])
 
 (defn- selected-wake-room [state choice]
@@ -135,30 +126,6 @@
 (defn- legal-shot-length? [path]
   (<= 1 (count path) 5))
 
-(defn- fallback-arrow-room [previous-room current-room]
-  (or (first (remove #{previous-room} (cave/exits current-room)))
-      (first (cave/exits current-room))))
-
-(defn- next-arrow-room [state previous-room current-room requested-room deviation-used?]
-  (if (cave/connected? current-room requested-room)
-    {:room requested-room :deviation-used? deviation-used?}
-    (if (and (:arrow-deviation-room state) (not deviation-used?))
-      {:room (:arrow-deviation-room state) :deviation-used? true}
-      {:room (fallback-arrow-room previous-room current-room)
-       :deviation-used? deviation-used?})))
-
-(defn- arrow-visits [state path]
-  (loop [current-room (:player-room state)
-         previous-room nil
-         remaining path
-         visits []
-         deviation-used? false]
-    (if-let [requested-room (first remaining)]
-      (let [{:keys [room deviation-used?]}
-            (next-arrow-room state previous-room current-room requested-room deviation-used?)]
-        (recur room current-room (rest remaining) (conj visits room) deviation-used?))
-      visits)))
-
 (defn- arrow-hit-result [state visits status message]
   (-> state
       (assoc :arrow-visits visits
@@ -189,7 +156,11 @@
   (let [state (normalize-state state)]
     (if-not (legal-shot-length? path)
       (assoc state :error invalid-shot-message)
-      (shot-result state (arrow-visits state path)))))
+      (shot-result state (arrow/visits state path)))))
 
 (defn shoot-arrow [state path]
   (try-shoot-arrow state path))
+
+;; clj-mutate-manifest-begin
+;; {:version 1, :tested-at "2026-06-05T15:06:06.722257-05:00", :module-hash "-327587831", :forms [{:id "form/0/ns", :kind "ns", :line 1, :end-line 4, :hash "-200258023"} {:id "def/pit-message", :kind "def", :line 6, :end-line 6, :hash "-786903927"} {:id "def/bat-message", :kind "def", :line 7, :end-line 7, :hash "-2114143883"} {:id "def/invalid-move-message", :kind "def", :line 8, :end-line 8, :hash "-1975420308"} {:id "def/wumpus-hit-message", :kind "def", :line 9, :end-line 9, :hash "-590885553"} {:id "def/self-hit-message", :kind "def", :line 10, :end-line 10, :hash "2000715607"} {:id "def/out-of-arrows-message", :kind "def", :line 11, :end-line 11, :hash "-1285208638"} {:id "def/invalid-shot-message", :kind "def", :line 12, :end-line 12, :hash "-751353568"} {:id "defn-/place-entities", :kind "defn-", :line 14, :end-line 21, :hash "2103194020"} {:id "defn/configured-game", :kind "defn", :line 23, :end-line 29, :hash "572511432"} {:id "defn-/normalize-state", :kind "defn-", :line 31, :end-line 37, :hash "-1300842534"} {:id "defn/start-game", :kind "defn", :line 39, :end-line 40, :hash "1737958242"} {:id "defn/reuse-setup", :kind "defn", :line 42, :end-line 43, :hash "-1770652719"} {:id "defn/hazard-rooms", :kind "defn", :line 45, :end-line 46, :hash "-1217263101"} {:id "defn/occupied-rooms", :kind "defn", :line 48, :end-line 49, :hash "751994569"} {:id "defn/adjacent-hazards", :kind "defn", :line 51, :end-line 55, :hash "-882909919"} {:id "defn/turn-warnings", :kind "defn", :line 57, :end-line 63, :hash "1045481678"} {:id "defn/wumpus-wake-options", :kind "defn", :line 65, :end-line 66, :hash "441918983"} {:id "defn-/append-message", :kind "defn-", :line 68, :end-line 69, :hash "-2115918181"} {:id "defn-/wake-choice-handlers", :kind "defn-", :line 71, :end-line 73, :hash "1048816146"} {:id "defn-/selected-wake-room", :kind "defn-", :line 75, :end-line 79, :hash "-1923414951"} {:id "defn-/wake-choice-room", :kind "defn-", :line 81, :end-line 83, :hash "305017871"} {:id "form/22/declare", :kind "declare", :line 85, :end-line 85, :hash "-404549809"} {:id "defn/wake-wumpus", :kind "defn", :line 87, :end-line 93, :hash "-1544172563"} {:id "defn-/transport-room", :kind "defn-", :line 95, :end-line 96, :hash "-217651789"} {:id "defn-/resolve-arrival", :kind "defn-", :line 98, :end-line 115, :hash "-1395146857"} {:id "defn/try-move-player", :kind "defn", :line 117, :end-line 121, :hash "-334120482"} {:id "defn/move-player", :kind "defn", :line 123, :end-line 124, :hash "2048385396"} {:id "defn-/legal-shot-length?", :kind "defn-", :line 126, :end-line 127, :hash "1969989613"} {:id "defn-/arrow-hit-result", :kind "defn-", :line 129, :end-line 133, :hash "1958350931"} {:id "defn-/missed-arrow-result", :kind "defn-", :line 135, :end-line 142, :hash "-1567399539"} {:id "defn-/shot-result", :kind "defn-", :line 144, :end-line 153, :hash "435965206"} {:id "defn/try-shoot-arrow", :kind "defn", :line 155, :end-line 159, :hash "-1093287084"} {:id "defn/shoot-arrow", :kind "defn", :line 161, :end-line 162, :hash "-1106796450"}]}
+;; clj-mutate-manifest-end

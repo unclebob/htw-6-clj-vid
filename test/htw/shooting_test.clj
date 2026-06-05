@@ -1,5 +1,6 @@
 (ns htw.shooting-test
   (:require [clojure.test :refer [deftest is]]
+            [htw.arrow :as arrow]
             [htw.game :as game]))
 
 (defn configured-game
@@ -20,22 +21,26 @@
 
 (deftest invalid-arrow-segment-deviates
   (let [state (configured-game 1 13 {:arrow-deviation-room 5
-                                     :wumpus-wake-choice "stay"})
+                                     :wumpus-wake-choice :stay})
         result (game/shoot-arrow state [3 4])]
     (is (= [5 4] (:arrow-visits result)))
     (is (= 4 (:arrows result)))
     (is (= :in-progress (:status result)))))
 
+(deftest invalid-arrow-segment-falls-back-to-a-legal-exit
+  (is (= [2] (arrow/visits (configured-game 1 13 {}) [3])))
+  (is (= [2 3] (arrow/visits (configured-game 1 13 {}) [2 4]))))
+
 (deftest missed-arrow-wakes-wumpus-and-can-lose-on-exhaustion
   (let [miss (game/shoot-arrow
-               (configured-game 1 10 {:wumpus-wake-choice "move to 2"})
+               (configured-game 1 10 {:wumpus-wake-choice 2})
                [5])
         eaten (game/shoot-arrow
-                (configured-game 1 10 {:wumpus-wake-choice "move to 1"})
+                (configured-game 1 10 {:wumpus-wake-choice 1})
                 [5])
         out (game/shoot-arrow
               (configured-game 1 10 {:arrows 1
-                                     :wumpus-wake-choice "stay"})
+                                     :wumpus-wake-choice :stay})
               [5])]
     (is (= 4 (:arrows miss)))
     (is (= 2 (:wumpus-room miss)))
