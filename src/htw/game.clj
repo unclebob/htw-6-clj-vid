@@ -9,6 +9,7 @@
 (def wumpus-hit-message "AHA! YOU GOT THE WUMPUS!")
 (def self-hit-message "OOPS! ARROW GOT YOU!")
 (def out-of-arrows-message "YOU RAN OUT OF ARROWS")
+(def invalid-shot-message "CAN'T SHOOT THERE")
 
 (defn- shuffled-rooms [seed]
   (let [rooms (java.util.ArrayList. cave/rooms)
@@ -160,32 +161,37 @@
         (recur room current-room (rest remaining) (conj visits room) deviation-used?))
       visits)))
 
+(defn- arrow-hit-result [state visits status message]
+  (-> state
+      (assoc :arrow-visits visits
+             :status status)
+      (append-message message)))
+
+(defn- missed-arrow-result [state visits]
+  (let [spent (update state :arrows dec)
+        woken (wake-wumpus spent)
+        exhausted? (and (zero? (:arrows woken))
+                        (= :in-progress (:status woken)))]
+    (cond-> (assoc woken :arrow-visits visits)
+      exhausted? (assoc :status :lost)
+      exhausted? (append-message out-of-arrows-message))))
+
+(defn- shot-result [state visits]
+  (cond
+    (some #{(:wumpus-room state)} visits)
+    (arrow-hit-result state visits :won wumpus-hit-message)
+
+    (some #{(:player-room state)} visits)
+    (arrow-hit-result state visits :lost self-hit-message)
+
+    :else
+    (missed-arrow-result state visits)))
+
 (defn try-shoot-arrow [state path]
   (let [state (normalize-state state)]
     (if-not (legal-shot-length? path)
-      (assoc state :error "CAN'T SHOOT THERE")
-      (let [visits (arrow-visits state path)]
-        (cond
-          (some #{(:wumpus-room state)} visits)
-          (-> state
-              (assoc :arrow-visits visits
-                     :status :won)
-              (append-message wumpus-hit-message))
-
-          (some #{(:player-room state)} visits)
-          (-> state
-              (assoc :arrow-visits visits
-                     :status :lost)
-              (append-message self-hit-message))
-
-          :else
-          (let [spent (update state :arrows dec)
-                woken (wake-wumpus spent)
-                exhausted? (and (zero? (:arrows woken))
-                                (= :in-progress (:status woken)))]
-            (cond-> (assoc woken :arrow-visits visits)
-              exhausted? (assoc :status :lost)
-              exhausted? (append-message out-of-arrows-message))))))))
+      (assoc state :error invalid-shot-message)
+      (shot-result state (arrow-visits state path)))))
 
 (defn shoot-arrow [state path]
   (try-shoot-arrow state path))

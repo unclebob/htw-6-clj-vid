@@ -13,10 +13,10 @@
         self-hit (game/shoot-arrow (configured-game 1 13 {}) [2 1])]
     (is (= [2 10 11] (:arrow-visits hit)))
     (is (= :won (:status hit)))
-    (is (= ["AHA! YOU GOT THE WUMPUS!"] (:messages hit)))
+    (is (= [game/wumpus-hit-message] (:messages hit)))
     (is (= [2 1] (:arrow-visits self-hit)))
     (is (= :lost (:status self-hit)))
-    (is (= ["OOPS! ARROW GOT YOU!"] (:messages self-hit)))))
+    (is (= [game/self-hit-message] (:messages self-hit)))))
 
 (deftest invalid-arrow-segment-deviates
   (let [state (configured-game 1 13 {:arrow-deviation-room 5
@@ -43,13 +43,13 @@
     (is (= :lost (:status eaten)))
     (is (= 0 (:arrows out)))
     (is (= :lost (:status out)))
-    (is (= ["YOU RAN OUT OF ARROWS"] (:messages out)))))
+    (is (= [game/out-of-arrows-message] (:messages out)))))
 
 (deftest invalid-shot-is-rejected-without-spending-arrow
   (let [empty-shot (game/try-shoot-arrow (configured-game 1 10 {}) [])
         long-shot (game/try-shoot-arrow (configured-game 1 10 {}) [2 10 11 12 13 14])]
-    (is (= "CAN'T SHOOT THERE" (:error empty-shot)))
     (is (= 5 (:arrows empty-shot)))
     (is (= :in-progress (:status empty-shot)))
-    (is (= "CAN'T SHOOT THERE" (:error long-shot)))
+    (is (= game/invalid-shot-message (:error empty-shot)))
+    (is (= game/invalid-shot-message (:error long-shot)))
     (is (= 5 (:arrows long-shot)))))
