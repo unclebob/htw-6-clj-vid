@@ -1,18 +1,16 @@
 (ns htw.game
-  (:require [htw.cave :as cave]))
+  (:require [htw.cave :as cave]
+            [htw.placement :as placement]))
 
-(defn- shuffled-rooms [seed]
-  (let [rooms (java.util.ArrayList. cave/rooms)
-        rng (java.util.Random. (long seed))]
-    (java.util.Collections/shuffle rooms rng)
-    (vec rooms)))
-
-(defn start-game [seed]
-  (let [[player wumpus pit-a pit-b bat-a bat-b] (shuffled-rooms seed)]
+(defn- place-entities [room-order]
+  (let [[player wumpus pit-a pit-b bat-a bat-b] room-order]
     {:player-room player
      :wumpus-room wumpus
      :pit-rooms #{pit-a pit-b}
      :bat-rooms #{bat-a bat-b}}))
+
+(defn start-game [seed]
+  (place-entities (placement/seeded-room-order seed)))
 
 (defn reuse-setup [state]
   state)
