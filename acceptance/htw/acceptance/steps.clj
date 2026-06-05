@@ -206,12 +206,22 @@
     "bats are in rooms <bat_rooms>"
     (swap! world assoc-in [:custom-game :bat-rooms] (set (parse-int-list (:bat_rooms example))))
 
-    "bat transport will choose room <transport_room>"
-    (swap! world assoc-in [:custom-game :bat-transport-room] (parse-int (:transport_room example)))
+        "bat transport will choose room <transport_room>"
+        (swap! world assoc-in [:custom-game :bat-transport-room] (parse-int (:transport_room example)))
 
-    "the Wumpus wake choice is <wake_choice>"
-    (swap! world assoc-in [:custom-game :wumpus-wake-choice]
-           (parse-wake-choice (:wake_choice example)))
+        "the configured bat transport room is <expected_transport_room>"
+        (assert= (parse-int (:expected_transport_room example))
+                 (:bat-transport-room (:custom-game @world))
+                 "configured bat transport room")
+
+        "the Wumpus wake choice is <wake_choice>"
+        (swap! world assoc-in [:custom-game :wumpus-wake-choice]
+               (parse-wake-choice (:wake_choice example)))
+
+        "the configured Wumpus wake choice is <expected_wake_choice>"
+        (assert= (parse-wake-choice (:expected_wake_choice example))
+                 (:wumpus-wake-choice (:custom-game @world))
+                 "configured Wumpus wake choice")
 
     "adjacent hazards are requested for room <player_room>"
     (swap! world assoc :adjacent-hazards
@@ -400,9 +410,12 @@
     "the shot is rejected with message <message>"
     (assert= (:message example) (:error (:custom-game @world)) "shot rejection")
 
-    "the player enters command <command>"
-    (let [{:keys [state output]} (ui/enter-command (:custom-game @world) (:command example))]
-      (swap! world assoc :custom-game state :output output))
+        "the player enters command <command>"
+        (let [{:keys [state output]} (ui/enter-command (:custom-game @world) (:command example))]
+          (swap! world assoc :custom-game state :output output :entered-command (:command example)))
+
+        "the entered command is <expected_command>"
+        (assert= (:expected_command example) (:entered-command @world) "entered command")
 
     "the player runs shell command <command>"
     (if (= "htw" (:command example))
@@ -507,12 +520,20 @@
           (when (some #{warning} (:output @world))
             (fail! (str "unexpected warning: " warning))))))
 
-    "the player loses with command <loss_command>"
-    (let [{:keys [state output]} (ui/enter-command (:custom-game @world) (:loss_command example))]
-      (swap! world assoc :custom-game state :output output))
+        "the player loses with command <loss_command>"
+        (let [{:keys [state output]} (ui/enter-command (:custom-game @world) (:loss_command example))]
+          (swap! world assoc :custom-game state :output output :loss-command (:loss_command example)))
 
-    "the player answers same setup prompt with <answer>"
-    (swap! world assoc :next-game (ui/replay (:custom-game @world) (:answer example)))
+        "the loss command is <expected_loss_command>"
+        (assert= (:expected_loss_command example) (:loss-command @world) "loss command")
+
+        "the player answers same setup prompt with <answer>"
+        (swap! world assoc
+               :next-game (ui/replay (:custom-game @world) (:answer example))
+               :replay-answer (:answer example))
+
+        "the replay answer is <expected_answer>"
+        (assert= (:expected_answer example) (:replay-answer @world) "replay answer")
 
     "the next game has player room <player_room>"
     (assert= (parse-int (:player_room example)) (:player-room (:next-game @world)) "next player room")
@@ -533,9 +554,12 @@
     "the next game is not required to preserve the previous placement"
     true
 
-    "the player answers instructions prompt with <answer>"
-    (let [{:keys [state output]} (ui/answer-instructions (:custom-game @world) (:answer example))]
-      (swap! world assoc :custom-game state :output output))
+        "the player answers instructions prompt with <answer>"
+        (let [{:keys [state output]} (ui/answer-instructions (:custom-game @world) (:answer example))]
+          (swap! world assoc :custom-game state :output output :instructions-answer (:answer example)))
+
+        "the instructions answer is <expected_answer>"
+        (assert= (:expected_answer example) (:instructions-answer @world) "instructions answer")
 
     "the output includes instructions text <includes_instructions>"
     (let [expected? (= "true" (:includes_instructions example))

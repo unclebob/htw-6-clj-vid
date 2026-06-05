@@ -50,6 +50,7 @@
    "--wumpus-wake" [:wumpus-wake-choice parse-wake-choice]
    "--arrow-deviation" [:arrow-deviation-room #(parse-int % "arrow deviation room")]
    "--arrows" [:arrows #(parse-int % "arrows")]
+   "--show-seed" [:show-seed (constantly true)]
    "--commands" [:commands identity]})
 
 (defn- parse-option [[option value]]
@@ -161,7 +162,59 @@
                    (seq (rest remaining)))
           (recur next-state (rest remaining)))))))
 
-(defn inspect [& args]
+(defn- explicit-launch-options? [options]
+  (or (:seed options) (explicit-setup? options)))
+
+(defn- with-observed-seed [launch show-seed?]
+  (if show-seed?
+    (update launch :output conj (str "SEED: " (:seed launch)))
+    launch))
+
+(defn- initial-launch [args]
+  (let [options (parse-args args)]
+    (cond
+      (explicit-launch-options? options)
+      (with-observed-seed {:seed (:seed options)
+                           :state (configured-state options)
+                           :output [instructions-prompt]}
+                          (:show-seed options))
+
+      :else
+      (with-observed-seed (launch-game) (:show-seed options)))))
+
+(defn- print-lines! [lines]
+  (doseq [line lines]
+    (println line))
+  (flush))
+
+(defn- continue-after-terminal [state]
+  (when (= :lost (:status state))
+    (when-let [answer (read-line)]
+      (let [next-state (ui/replay state answer)
+            turn (ui/display-turn next-state)]
+        (print-lines! (:output turn))
+        (:state turn)))))
+
+(defn- run-game-loop! [state]
+  (loop [state state]
+    (when (and state (= :in-progress (:status state :in-progress)))
+      (when-let [command (read-line)]
+        (let [{:keys [state output]} (ui/enter-command state command)]
+          (print-lines! output)
+          (if (= :lost (:status state))
+            (recur (continue-after-terminal state))
+            (when (= :in-progress (:status state :in-progress))
+              (recur state))))))))
+
+(defn -main [& args]
+  (let [launch (initial-launch args)]
+    (print-lines! (:output launch))
+    (when-let [answer (read-line)]
+      (let [{:keys [state output]} (answer-instructions launch answer)]
+        (print-lines! output)
+        (run-game-loop! state)))))
+
+(defn inspect-main [& args]
   (try
     (let [options (parse-args args)
           state (configured-state options)]
@@ -178,10 +231,5 @@
         (println (.getMessage e)))
       (System/exit 1))))
 
-(defn -main [& _]
-  (let [launch (launch-game)]
-    (println instructions-prompt)
-    (flush)
-    (when-let [answer (read-line)]
-      (doseq [line (:output (answer-instructions launch answer))]
-        (println line)))))
+(defn inspect [& args]
+  (apply inspect-main args))
