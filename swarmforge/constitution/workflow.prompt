@@ -1,0 +1,31 @@
+# Workflow Rules
+
+- At startup, discover and remember the branch or worktree assigned to your role.
+- If your assigned worktree is `master`, work in the main project checkout on its current branch; do not expect or create a `.worktrees/<role>` directory for that role.
+- Work only in your assigned branch or worktree.
+- Do not inspect, diff, merge, or base work on another branch unless that branch is specifically named in a handoff or explicit user instruction.
+- Use `./tmp/` in your assigned worktree for temporary files; do not use `/tmp`.
+- Use `./swarmtools/notify-agent.sh` from your assigned checkout or worktree for handoffs between agents. Startup creates this helper locally, using a wrapper in linked worktrees. Do not rely on PATH lookup.
+- Maintain the tracked root `logbook.md` file for every handoff received or sent.
+- When receiving a handoff, add a `logbook.md` note with a timestamp, the complete handoff message received, and a brief description of the action taken.
+- When sending a handoff, add a `logbook.md` note with a timestamp, the complete handoff message sent, and a brief summary of the handoff contents.
+- Commit `logbook.md` updates with the related work; do not leave handoff log entries untracked or uncommitted.
+- For every handoff, write the complete handoff message to `./tmp/<target-role>-handoff.txt` and send it with `./swarmtools/notify-agent.sh <target-role> --file ./tmp/<target-role>-handoff.txt`. Do not pass multiline handoff messages directly as shell arguments.
+- Start every handoff message with: `Re-read your role and constitution.`
+- The specifier invents a short, stable handoff name for each accepted specification handoff.
+- Every later handoff for that work must include the specifier handoff name.
+- Handoffs must report only essential state, not prescribe process. After the opening line, include exactly these fields and no other prose: sender role, specifier handoff name, branch name, and 10-character commit hash.
+- Do not tell the receiving role how to do its job, repeat your process, or ask it to continue sender-owned responsibilities. The normal request is: `Apply your own role rules to this state.`
+- After receiving a handoff, merge the sender branch state identified by the handoff branch name and 10-character commit hash into your assigned branch before applying your own role rules.
+- A QA handoff does not interrupt current work. If it arrives while you are busy, queue it using the normal queued-message rules. When processing a QA handoff, merge the sender branch state identified by the handoff branch name and 10-character commit hash, record the handoff in `logbook.md`, commit the logbook update if needed, and do not apply role-specific work to that QA handoff. Then continue normal queue processing, including the next queued message when one exists.
+- When receiving a handoff, ignore sender process narrative and decide next actions only from your own role prompt, the constitution, and the current project state.
+- If one or more messages arrive while you are busy:
+  - Save each complete message as its own file in a local untracked `pending-messages/` directory in your assigned worktree.
+  - Name queued message files with this format: `PP-YYYYMMDD-HHMMSS-source.txt`, where `PP` is the two-digit priority.
+  - Use priority `00` for QA handoffs to specifier, coder, cleaner, architect, or hardender.
+  - Use priority `50` for normal messages unless a role prompt or explicit user instruction sets a different priority.
+  - Finish the current job before acting on queued messages.
+  - After the current job is complete and any required handoff has been sent, process queued message files in sorted filename order.
+  - Before removing any queued handoff file, add a `logbook.md` note with a timestamp, the complete handoff message from that file, and the reason for the note.
+  - Delete each queued message file only after processing it. Do not use `rm -f`; use a non-forced deletion command so queue cleanup does not trigger escalation.
+- If the expected git layout or assigned worktree is missing, stop and report instead of silently working in the wrong place.

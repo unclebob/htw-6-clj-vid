@@ -1,0 +1,8 @@
+# Project Rules
+
+- This project is configured for SwarmForge with six Codex-backed agents: specifier, coder, cleaner, architect, hardender, and QA.
+- Project language: Clojure with babashka where feasible..
+- Preserve project-local SwarmForge configuration under `swarmforge/`.
+- Keep swarm state local under `.swarmforge/`, worktrees under `.worktrees/`, helper scripts under `swarmtools/`, logs under `logs/`, and shared agent context under `agent_context/`.
+- Prefer terse, explicit handoffs that report state and request role-appropriate review. Do not include verifications or sender process narrative.
+- Do not change another role's prompt or workflow ownership without explicit user direction.
