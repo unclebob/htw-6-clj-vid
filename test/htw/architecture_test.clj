@@ -5,6 +5,7 @@
 (def source-boundaries
   {"src/htw/game.clj" ["java.util.Random"
                        "java.util.Collections"
+                       "clojure.string"
                        "slurp"
                        "spit"
                        "System/exit"
