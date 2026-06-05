@@ -187,3 +187,31 @@ branch name: swarmforge-QA
 ```
 
 Reason for note: message arrived while task2/task3 hardening was in progress; processing after completing and sending the required task3-shooting QA handoff. Per workflow, merging the named QA state and applying no hardender-specific work to this QA handoff.
+
+## 2026-06-05 15:10:38 CDT - Queued architect handoff processed
+
+Complete queued handoff message:
+
+```
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: task4-game-loop
+branch name: swarmforge-architect
+10-character commit hash: a2a585e1b8
+```
+
+Reason for note: message arrived while task2/task3 hardening was in progress; processing together with queued htw-shell-launch architect handoff. The supplied abbreviated hash did not resolve; resolved to matching architect handoff commit `a2a585ec06...`.
+
+## 2026-06-05 15:10:38 CDT - Queued architect handoff processed
+
+Complete queued handoff message:
+
+```
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-architect
+10-character commit hash: d0f83c3f5c
+```
+
+Reason for note: message arrived while task2/task3 hardening was in progress; processing together with queued task4-game-loop architect handoff. The supplied abbreviated hash did not resolve; resolved to matching architect handoff commit `d0f83c3e2e...`.
