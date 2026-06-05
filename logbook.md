@@ -187,3 +187,16 @@ branch name: swarmforge-coder
 ```
 
 Summary: The `htw` shell command, random launch seed behavior, instructions prompt startup, first-turn continuation, unit tests, acceptance handlers, and smoke-tested executable wrapper are ready for cleaner review.
+
+## 2026-06-05 15:01:34 CDT - Received QA Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task1-setup
+branch name: swarmforge-QA
+10-character commit hash: 3f3ce9bd27
+```
+
+Action taken: Re-read coder role and constitution, recorded the QA handoff, and prepared to merge the specified QA state without applying coder-specific work.
