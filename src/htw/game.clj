@@ -6,6 +6,9 @@
 (def bat-message "ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!")
 (def invalid-move-message "CAN'T MOVE THERE")
 (def move-choice-prefix "move to ")
+(def wumpus-hit-message "AHA! YOU GOT THE WUMPUS!")
+(def self-hit-message "OOPS! ARROW GOT YOU!")
+(def out-of-arrows-message "YOU RAN OUT OF ARROWS")
 
 (defn- shuffled-rooms [seed]
   (let [rooms (java.util.ArrayList. cave/rooms)
@@ -35,7 +38,8 @@
       (update :pit-rooms #(or % #{}))
       (update :bat-rooms #(or % #{}))
       (update :messages #(or % []))
-      (update :status #(or % :in-progress))))
+      (update :status #(or % :in-progress))
+      (update :arrows #(or % 5))))
 
 (defn reuse-setup [state]
   state)
@@ -128,3 +132,60 @@
 
 (defn move-player [state destination-room]
   (try-move-player state destination-room))
+
+(defn- legal-shot-length? [path]
+  (<= 1 (count path) 5))
+
+(defn- fallback-arrow-room [previous-room current-room]
+  (or (first (remove #{previous-room} (cave/exits current-room)))
+      (first (cave/exits current-room))))
+
+(defn- next-arrow-room [state previous-room current-room requested-room deviation-used?]
+  (if (cave/connected? current-room requested-room)
+    {:room requested-room :deviation-used? deviation-used?}
+    (if (and (:arrow-deviation-room state) (not deviation-used?))
+      {:room (:arrow-deviation-room state) :deviation-used? true}
+      {:room (fallback-arrow-room previous-room current-room)
+       :deviation-used? deviation-used?})))
+
+(defn- arrow-visits [state path]
+  (loop [current-room (:player-room state)
+         previous-room nil
+         remaining path
+         visits []
+         deviation-used? false]
+    (if-let [requested-room (first remaining)]
+      (let [{:keys [room deviation-used?]}
+            (next-arrow-room state previous-room current-room requested-room deviation-used?)]
+        (recur room current-room (rest remaining) (conj visits room) deviation-used?))
+      visits)))
+
+(defn try-shoot-arrow [state path]
+  (let [state (normalize-state state)]
+    (if-not (legal-shot-length? path)
+      (assoc state :error "CAN'T SHOOT THERE")
+      (let [visits (arrow-visits state path)]
+        (cond
+          (some #{(:wumpus-room state)} visits)
+          (-> state
+              (assoc :arrow-visits visits
+                     :status :won)
+              (append-message wumpus-hit-message))
+
+          (some #{(:player-room state)} visits)
+          (-> state
+              (assoc :arrow-visits visits
+                     :status :lost)
+              (append-message self-hit-message))
+
+          :else
+          (let [spent (update state :arrows dec)
+                woken (wake-wumpus spent)
+                exhausted? (and (zero? (:arrows woken))
+                                (= :in-progress (:status woken)))]
+            (cond-> (assoc woken :arrow-visits visits)
+              exhausted? (assoc :status :lost)
+              exhausted? (append-message out-of-arrows-message))))))))
+
+(defn shoot-arrow [state path]
+  (try-shoot-arrow state path))
