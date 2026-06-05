@@ -1,6 +1,7 @@
 (ns htw.acceptance.steps
   (:require [clojure.string :as str]
             [htw.cave :as cave]
+            [htw.cli :as cli]
             [htw.game :as game]
             [htw.ui :as ui]))
 
@@ -46,6 +47,9 @@
 
     "the terminal game has not started play"
     (swap! world assoc :custom-game (game/start-game 1973) :output [])
+
+    "the project command directory is available on the shell path"
+    (swap! world assoc :command-path "bin")
 
     "the cave topology is inspected"
     (swap! world assoc :topology cave/topology)
@@ -291,6 +295,43 @@
     (let [{:keys [state output]} (ui/enter-command (:custom-game @world) (:command example))]
       (swap! world assoc :custom-game state :output output))
 
+    "the player runs shell command <command>"
+    (if (= "htw" (:command example))
+      (let [{:keys [state output seed] :as launch} (cli/launch-game)]
+        (swap! world assoc :launch launch :custom-game state :output output :seed seed))
+      (fail! (str "unknown shell command: " (:command example))))
+
+    "the player runs shell command <command> for the first game"
+    (if (= "htw" (:command example))
+      (swap! world assoc :first-launch (cli/launch-game))
+      (fail! (str "unknown shell command: " (:command example))))
+
+    "the player exits before taking a turn"
+    true
+
+    "the player runs shell command <command> for the second game"
+    (if (= "htw" (:command example))
+      (swap! world assoc :second-launch (cli/launch-game))
+      (fail! (str "unknown shell command: " (:command example))))
+
+    "the terminal game starts"
+    (when-not (some #{cli/instructions-prompt} (:output @world))
+      (fail! "terminal game did not start at instructions prompt"))
+
+    "the game uses a random seed"
+    (when-not (integer? (:seed @world))
+      (fail! "game did not use an integer random seed"))
+
+    "the first game seed is different from the second game seed"
+    (assert= false
+             (= (:seed (:first-launch @world)) (:seed (:second-launch @world)))
+             "fresh random seeds")
+
+    "both games have valid placements"
+    (doseq [launch [(:first-launch @world) (:second-launch @world)]]
+      (when-not (every? (set cave/rooms) (game/occupied-rooms (:state launch)))
+        (fail! "launch placement is invalid")))
+
     "the next turn shows room <expected_room>"
     (assert= (parse-int (:expected_room example))
              (:player-room (:custom-game @world))
@@ -332,6 +373,14 @@
     "the output contains prompt <prompt>"
     (when-not (some #{(:prompt example)} (:output @world))
       (fail! (str "output missing prompt: " (:prompt example))))
+
+    "the output contains prompt <instructions_prompt>"
+    (when-not (some #{(:instructions_prompt example)} (:output @world))
+      (fail! (str "output missing prompt: " (:instructions_prompt example))))
+
+    "the output contains prompt <turn_prompt>"
+    (when-not (some #{(:turn_prompt example)} (:output @world))
+      (fail! (str "output missing prompt: " (:turn_prompt example))))
 
     "the next turn is displayed"
     (let [{:keys [state output]} (ui/display-turn (:custom-game @world))]
