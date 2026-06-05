@@ -1,0 +1,8 @@
+{:paths ["src" "test" "acceptance"]
+ :tasks
+ {test {:doc "Run unit tests"
+        :task (exec 'htw.test-runner/-main)}
+  property {:doc "Run property tests"
+            :task (exec 'htw.property-test-runner/-main)}
+  acceptance {:doc "Run generated acceptance tests"
+              :task (shell "./scripts/acceptance.sh")}}}
