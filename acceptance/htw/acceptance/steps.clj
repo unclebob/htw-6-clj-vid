@@ -33,6 +33,10 @@
   (when-not (some #{message} (:messages state))
     (fail! (str "message not heard: " message))))
 
+(defn- assert-output-contains [world line label]
+  (when-not (some #{line} (:output @world))
+    (fail! (str "output missing " label ": " line))))
+
 (defn- seed-from-start-step [expanded]
   (when-let [[_ seed] (re-matches #"a game is started with seed ([0-9]+)" expanded)]
     (parse-int seed)))
@@ -304,48 +308,38 @@
              "arrows")
 
     "the output contains line <message>"
-    (when-not (some #{(:message example)} (:output @world))
-      (fail! (str "output missing line: " (:message example))))
+    (assert-output-contains world (:message example) "line")
 
     "the output contains line <win_message>"
-    (when-not (some #{(:win_message example)} (:output @world))
-      (fail! (str "output missing line: " (:win_message example))))
+    (assert-output-contains world (:win_message example) "line")
 
     "the output contains line <taunt_message>"
-    (when-not (some #{(:taunt_message example)} (:output @world))
-      (fail! (str "output missing line: " (:taunt_message example))))
+    (assert-output-contains world (:taunt_message example) "line")
 
     "the output contains line <loss_message>"
-    (when-not (some #{(:loss_message example)} (:output @world))
-      (fail! (str "output missing line: " (:loss_message example))))
+    (assert-output-contains world (:loss_message example) "line")
 
     "the output contains line <bat_message>"
-    (when-not (some #{(:bat_message example)} (:output @world))
-      (fail! (str "output missing line: " (:bat_message example))))
+    (assert-output-contains world (:bat_message example) "line")
 
     "the output contains prompt <replay_prompt>"
-    (when-not (some #{(:replay_prompt example)} (:output @world))
-      (fail! (str "output missing prompt: " (:replay_prompt example))))
+    (assert-output-contains world (:replay_prompt example) "prompt")
 
     "the output contains prompt <prompt>"
-    (when-not (some #{(:prompt example)} (:output @world))
-      (fail! (str "output missing prompt: " (:prompt example))))
+    (assert-output-contains world (:prompt example) "prompt")
 
     "the next turn is displayed"
     (let [{:keys [state output]} (ui/display-turn (:custom-game @world))]
       (swap! world assoc :custom-game state :output output))
 
     "the output contains line <room_line>"
-    (when-not (some #{(:room_line example)} (:output @world))
-      (fail! (str "output missing line: " (:room_line example))))
+    (assert-output-contains world (:room_line example) "line")
 
     "the output contains line <tunnel_line>"
-    (when-not (some #{(:tunnel_line example)} (:output @world))
-      (fail! (str "output missing line: " (:tunnel_line example))))
+    (assert-output-contains world (:tunnel_line example) "line")
 
     "the output contains line <arrows_line>"
-    (when-not (some #{(:arrows_line example)} (:output @world))
-      (fail! (str "output missing line: " (:arrows_line example))))
+    (assert-output-contains world (:arrows_line example) "line")
 
     "the output contains warnings <warnings>"
     (let [warnings (parse-warnings (:warnings example))]
