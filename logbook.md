@@ -82,6 +82,20 @@ branch name: swarmforge-coder
 
 Summary: Task 2 movement, warnings, hazard resolution, Wumpus wake behavior, unit tests, and acceptance handlers are ready for cleaner review.
 
+## 2026-06-05 14:05:57 CDT - sent handoff to coder
+
+Complete handoff message:
+
+```text
+Re-read your role and constitution.
+sender role: specifier
+specifier handoff name: task3-shooting
+branch name: master
+10-character commit hash: 7b4df4d6de
+```
+
+Summary: Task 3 crooked-arrow shooting specifications and end-to-end QA suite are ready for coder review.
+
 ## 2026-06-05 14:17:32 CDT - Processing Queued Handoff
 
 Message:
