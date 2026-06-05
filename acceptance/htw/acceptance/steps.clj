@@ -14,9 +14,31 @@
     []
     (mapv parse-int (str/split (str value) #"\s*,\s*"))))
 
+(defn- parse-warnings [value]
+  (if (= "none" (str/trim (str value)))
+    []
+    (mapv str/trim (str/split (str value) #"\s*,\s*"))))
+
+(defn- outcome-status [value]
+  (case (str/trim (str value))
+    "lost" :lost
+    "in progress" :in-progress))
+
+(defn- parse-wake-choice [value]
+  (let [choice (str/trim (str value))]
+    (case choice
+      "stay" :stay
+      (if-let [[_ room] (re-matches #"move to ([0-9]+)" choice)]
+        (parse-int room)
+        (fail! (str "unsupported Wumpus wake choice: " choice))))))
+
 (defn- assert= [expected actual message]
   (when-not (= expected actual)
     (fail! (str message " expected " (pr-str expected) " but was " (pr-str actual)))))
+
+(defn- assert-message-heard [state message]
+  (when-not (some #{message} (:messages state))
+    (fail! (str "message not heard: " message))))
 
 (defn- seed-from-start-step [expanded]
   (when-let [[_ seed] (re-matches #"a game is started with seed ([0-9]+)" expanded)]
@@ -104,6 +126,9 @@
     "a game has the player in room <player_room>"
     (swap! world assoc-in [:custom-game :player-room] (parse-int (:player_room example)))
 
+    "a game has the player in room <start_room>"
+    (swap! world assoc-in [:custom-game :player-room] (parse-int (:start_room example)))
+
     "the Wumpus is in room <wumpus_room>"
     (swap! world assoc-in [:custom-game :wumpus-room] (parse-int (:wumpus_room example)))
 
@@ -112,6 +137,13 @@
 
     "bats are in rooms <bat_rooms>"
     (swap! world assoc-in [:custom-game :bat-rooms] (set (parse-int-list (:bat_rooms example))))
+
+    "bat transport will choose room <transport_room>"
+    (swap! world assoc-in [:custom-game :bat-transport-room] (parse-int (:transport_room example)))
+
+    "the Wumpus wake choice is <wake_choice>"
+    (swap! world assoc-in [:custom-game :wumpus-wake-choice]
+           (parse-wake-choice (:wake_choice example)))
 
     "adjacent hazards are requested for room <player_room>"
     (swap! world assoc :adjacent-hazards
@@ -132,6 +164,87 @@
     (assert= (parse-int (:bat_count example))
              (:bat (:adjacent-hazards @world))
              "adjacent bat count")
+
+    "turn warnings are requested"
+    (swap! world assoc :warnings (game/turn-warnings (:custom-game @world)))
+
+    "the visible warnings are <warnings>"
+    (assert= (parse-warnings (:warnings example))
+             (:warnings @world)
+             "visible warnings")
+
+    "warning number 1 is <first_warning>"
+    (assert= (:first_warning example) (first (:warnings @world)) "first warning")
+
+    "warning number 2 is <second_warning>"
+    (assert= (:second_warning example) (second (:warnings @world)) "second warning")
+
+    "warning number 3 is <third_warning>"
+    (assert= (:third_warning example) (nth (:warnings @world) 2 nil) "third warning")
+
+    "the player moves to room <destination_room>"
+    (swap! world assoc :custom-game
+           (game/move-player (:custom-game @world)
+                             (parse-int (:destination_room example))))
+
+    "the player tries to move to room <destination_room>"
+    (swap! world assoc :custom-game
+           (game/try-move-player (:custom-game @world)
+                                 (parse-int (:destination_room example))))
+
+    "the player is in room <destination_room>"
+    (assert= (parse-int (:destination_room example))
+             (:player-room (:custom-game @world))
+             "player room")
+
+    "the player is in room <start_room>"
+    (assert= (parse-int (:start_room example))
+             (:player-room (:custom-game @world))
+             "player room")
+
+    "the player is in room <transport_room>"
+    (assert= (parse-int (:transport_room example))
+             (:player-room (:custom-game @world))
+             "transported player room")
+
+    "the game is still in progress"
+    (assert= :in-progress (:status (:custom-game @world)) "game status")
+
+    "the game is lost"
+    (assert= :lost (:status (:custom-game @world)) "game status")
+
+    "the game is <outcome>"
+    (assert= (outcome-status (:outcome example))
+             (:status (:custom-game @world))
+             "game status")
+
+    "the move is rejected with message <message>"
+    (assert= (:message example) (:error (:custom-game @world)) "move rejection")
+
+    "the player hears message <message>"
+    (assert-message-heard (:custom-game @world) (:message example))
+
+    "the player hears message <bat_message>"
+    (assert-message-heard (:custom-game @world) (:bat_message example))
+
+    "the player hears message <pit_message>"
+    (assert-message-heard (:custom-game @world) (:pit_message example))
+
+    "the Wumpus is in room <expected_wumpus_room>"
+    (assert= (parse-int (:expected_wumpus_room example))
+             (:wumpus-room (:custom-game @world))
+             "Wumpus room")
+
+    "Wumpus wake options are requested"
+    (swap! world assoc :wake-options (game/wumpus-wake-options (:custom-game @world)))
+
+    "the Wumpus wake options are <wake_options>"
+    (assert= (parse-int-list (:wake_options example))
+             (:wake-options @world)
+             "Wumpus wake options")
+
+    "the Wumpus wakes"
+    (swap! world assoc :custom-game (game/wake-wumpus (:custom-game @world)))
 
     "both games have the same player room"
     (assert= (:player-room (:game @world))

@@ -29,3 +29,28 @@
     (testing (str room " <-> " exit)
       (is (cave/connected? exit room))
       (is (not= room exit)))))
+
+(deftest movement-properties
+  (doseq [room cave/rooms
+          destination cave/rooms
+          :let [safe-wumpus-room (first (remove (hash-set room destination) cave/rooms))
+                state (game/configured-game room safe-wumpus-room #{} #{})
+                moved (game/try-move-player state destination)]]
+    (testing (str room " -> " destination)
+      (if (cave/connected? room destination)
+        (do
+          (is (= destination (:player-room moved)))
+          (is (= :in-progress (:status moved))))
+        (do
+          (is (= room (:player-room moved)))
+          (is (= game/invalid-move-message (:error moved))))))))
+
+(deftest warning-properties
+  (doseq [room cave/rooms]
+    (testing (str "room " room)
+      (let [neighbor (first (cave/exits room))
+            state (game/configured-game room neighbor
+                                        (set (rest (cave/exits room)))
+                                        #{})]
+        (is (= ["I SMELL A WUMPUS" "I FEEL A DRAFT"]
+               (game/turn-warnings state)))))))
