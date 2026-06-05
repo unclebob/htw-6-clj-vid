@@ -6,3 +6,6 @@
 swarmtools/
 logs/
 agent_context/
+tmp/
+build/
+pending-messages/
