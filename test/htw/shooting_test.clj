@@ -1,5 +1,6 @@
 (ns htw.shooting-test
   (:require [clojure.test :refer [deftest is]]
+            [htw.arrow :as arrow]
             [htw.game :as game]))
 
 (defn configured-game
@@ -25,6 +26,10 @@
     (is (= [5 4] (:arrow-visits result)))
     (is (= 4 (:arrows result)))
     (is (= :in-progress (:status result)))))
+
+(deftest invalid-arrow-segment-falls-back-to-a-legal-exit
+  (is (= [2] (arrow/visits (configured-game 1 13 {}) [3])))
+  (is (= [2 3] (arrow/visits (configured-game 1 13 {}) [2 4]))))
 
 (deftest missed-arrow-wakes-wumpus-and-can-lose-on-exhaustion
   (let [miss (game/shoot-arrow

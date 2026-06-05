@@ -380,6 +380,20 @@ branch name: swarmforge-hardender
 
 Summary: Shell-launch acceptance mutation hardening completed and committed for QA review.
 
+## 2026-06-05 15:30:19 CDT - Queued QA handoff processed
+
+Complete queued handoff message:
+
+```
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task3-shooting
+branch name: swarmforge-QA
+10-character commit hash: 9e1c64a0b2
+```
+
+Reason for note: message arrived while task4/shell-launch hardening was in progress; processing after completing and sending the required QA handoffs. Per workflow, merging the named QA state and applying no hardender-specific work to this QA handoff.
+
 ## 2026-06-05 15:07:33 CDT - Sent handoff to QA
 
 Complete handoff message sent:
