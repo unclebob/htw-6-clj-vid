@@ -54,3 +54,16 @@ branch name: master
 ```
 
 Reason: Processing the next queued specifier handoff after completing and sending the Task 1 cleaner handoff.
+
+## 2026-06-05 14:16:45 CDT - Sent Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: task2-movement
+branch name: swarmforge-coder
+10-character commit hash: d59ca53a24
+```
+
+Summary: Task 2 movement, warnings, hazard resolution, Wumpus wake behavior, unit tests, and acceptance handlers are ready for cleaner review.
