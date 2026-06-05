@@ -1,13 +1,15 @@
 (ns htw.game
-  (:require [clojure.string :as str]
+  (:require [htw.arrow :as arrow]
             [htw.cave :as cave]
             [htw.placement :as placement]))
 
 (def pit-message "YYYIIIIEEEE . . . FELL IN PIT")
 (def bat-message "ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!")
+(def invalid-move-message "CAN'T MOVE THERE")
 (def wumpus-hit-message "AHA! YOU GOT THE WUMPUS!")
 (def self-hit-message "OOPS! ARROW GOT YOU!")
 (def out-of-arrows-message "YOU RAN OUT OF ARROWS")
+(def invalid-shot-message "CAN'T SHOOT THERE")
 
 (defn- place-entities [room-order]
   (let [[player wumpus pit-a pit-b bat-a bat-b] room-order]
@@ -17,9 +19,6 @@
      :bat-rooms #{bat-a bat-b}
      :status :in-progress
      :messages []}))
-
-(defn start-game [seed]
-  (place-entities (placement/seeded-room-order seed)))
 
 (defn configured-game [player-room wumpus-room pit-rooms bat-rooms]
   {:player-room player-room
@@ -37,14 +36,17 @@
       (update :status #(or % :in-progress))
       (update :arrows #(or % 5))))
 
+(defn start-game [seed]
+  (place-entities (placement/seeded-room-order seed)))
+
 (defn reuse-setup [state]
   state)
 
 (defn hazard-rooms [{:keys [wumpus-room pit-rooms bat-rooms]}]
-  (set (concat [wumpus-room] pit-rooms bat-rooms)))
+  (into #{wumpus-room} (concat pit-rooms bat-rooms)))
 
 (defn occupied-rooms [{:keys [player-room] :as state}]
-  (conj (hazard-rooms state) player-room))
+  (into #{player-room} (hazard-rooms state)))
 
 (defn adjacent-hazards [{:keys [wumpus-room pit-rooms bat-rooms]} room]
   (let [neighbors (set (cave/exits room))]
@@ -66,14 +68,23 @@
 (defn- append-message [state message]
   (update state :messages (fnil conj []) message))
 
+(defn- move-to-choice? [choice]
+  (and (string? choice) (.startsWith choice "move to ")))
+
+(defn- wake-choice-handlers [state]
+  [[#(or (= :stay %) (= "stay" %)) (constantly (:wumpus-room state))]
+   [integer? identity]
+   [move-to-choice? #(Long/parseLong (subs % (count "move to ")))]])
+
+(defn- selected-wake-room [state choice]
+  (some (fn [[matches? room]]
+          (when (matches? choice)
+            (room choice)))
+        (wake-choice-handlers state)))
+
 (defn- wake-choice-room [state]
-  (let [choice (:wumpus-wake-choice state)]
-    (cond
-      (= choice "stay") (:wumpus-room state)
-      (and (string? choice) (str/starts-with? choice "move to "))
-      (Long/parseLong (subs choice (count "move to ")))
-      (integer? choice) choice
-      :else (first (wumpus-wake-options state)))))
+  (or (selected-wake-room state (:wumpus-wake-choice state))
+      (first (wumpus-wake-options state))))
 
 (declare resolve-arrival)
 
@@ -109,9 +120,9 @@
 
 (defn try-move-player [state destination-room]
   (let [state (normalize-state state)]
-    (if (contains? (set (cave/exits (:player-room state))) destination-room)
+    (if (cave/connected? (:player-room state) destination-room)
       (resolve-arrival (assoc state :player-room destination-room))
-      (assoc state :error "CAN'T MOVE THERE"))))
+      (assoc state :error invalid-move-message))))
 
 (defn move-player [state destination-room]
   (try-move-player state destination-room))
@@ -119,56 +130,37 @@
 (defn- legal-shot-length? [path]
   (<= 1 (count path) 5))
 
-(defn- fallback-arrow-room [previous-room current-room]
-  (or (first (remove #{previous-room} (cave/exits current-room)))
-      (first (cave/exits current-room))))
+(defn- arrow-hit-result [state visits status message]
+  (-> state
+      (assoc :arrow-visits visits
+             :status status)
+      (append-message message)))
 
-(defn- next-arrow-room [state previous-room current-room requested-room deviation-used?]
-  (if (contains? (set (cave/exits current-room)) requested-room)
-    {:room requested-room :deviation-used? deviation-used?}
-    (if (and (:arrow-deviation-room state) (not deviation-used?))
-      {:room (:arrow-deviation-room state) :deviation-used? true}
-      {:room (fallback-arrow-room previous-room current-room)
-       :deviation-used? deviation-used?})))
+(defn- missed-arrow-result [state visits]
+  (let [spent (update state :arrows dec)
+        woken (wake-wumpus spent)
+        exhausted? (and (zero? (:arrows woken))
+                        (= :in-progress (:status woken)))]
+    (cond-> (assoc woken :arrow-visits visits)
+      exhausted? (assoc :status :lost)
+      exhausted? (append-message out-of-arrows-message))))
 
-(defn- arrow-visits [state path]
-  (loop [current-room (:player-room state)
-         previous-room nil
-         remaining path
-         visits []
-         deviation-used? false]
-    (if-let [requested-room (first remaining)]
-      (let [{:keys [room deviation-used?]}
-            (next-arrow-room state previous-room current-room requested-room deviation-used?)]
-        (recur room current-room (rest remaining) (conj visits room) deviation-used?))
-      visits)))
+(defn- shot-result [state visits]
+  (cond
+    (some #{(:wumpus-room state)} visits)
+    (arrow-hit-result state visits :won wumpus-hit-message)
+
+    (some #{(:player-room state)} visits)
+    (arrow-hit-result state visits :lost self-hit-message)
+
+    :else
+    (missed-arrow-result state visits)))
 
 (defn try-shoot-arrow [state path]
   (let [state (normalize-state state)]
     (if-not (legal-shot-length? path)
-      (assoc state :error "CAN'T SHOOT THERE")
-      (let [visits (arrow-visits state path)]
-        (cond
-          (some #{(:wumpus-room state)} visits)
-          (-> state
-              (assoc :arrow-visits visits
-                     :status :won)
-              (append-message wumpus-hit-message))
-
-          (some #{(:player-room state)} visits)
-          (-> state
-              (assoc :arrow-visits visits
-                     :status :lost)
-              (append-message self-hit-message))
-
-          :else
-          (let [spent (update state :arrows dec)
-                woken (wake-wumpus spent)
-                exhausted? (and (zero? (:arrows woken))
-                                (= :in-progress (:status woken)))]
-            (cond-> (assoc woken :arrow-visits visits)
-              exhausted? (assoc :status :lost)
-              exhausted? (append-message out-of-arrows-message))))))))
+      (assoc state :error invalid-shot-message)
+      (shot-result state (arrow/visits state path)))))
 
 (defn shoot-arrow [state path]
   (try-shoot-arrow state path))

@@ -21,10 +21,23 @@
     []
     (mapv str/trim (str/split (str value) #"\s*,\s*"))))
 
+(defn- parse-path [value]
+  (if (= "none" (str/trim (str value)))
+    []
+    (parse-int-list value)))
+
 (defn- outcome-status [value]
   (case (str/trim (str value))
     "lost" :lost
     "in progress" :in-progress))
+
+(defn- parse-wake-choice [value]
+  (let [choice (str/trim (str value))]
+    (case choice
+      "stay" :stay
+      (if-let [[_ room] (re-matches #"move to ([0-9]+)" choice)]
+        (parse-int room)
+        (fail! (str "unsupported Wumpus wake choice: " choice))))))
 
 (defn- assert= [expected actual message]
   (when-not (= expected actual)
@@ -32,6 +45,10 @@
 
 (defn- active-game [world]
   (or (:game @world) (:custom-game @world)))
+
+(defn- assert-message-heard [state message]
+  (when-not (some #{message} (:messages state))
+    (fail! (str "message not heard: " message))))
 
 (defn- seed-from-start-step [expanded]
   (when-let [[_ seed] (re-matches #"a game is started with seed ([0-9]+)" expanded)]
@@ -189,7 +206,8 @@
     (swap! world assoc-in [:custom-game :bat-transport-room] (parse-int (:transport_room example)))
 
     "the Wumpus wake choice is <wake_choice>"
-    (swap! world assoc-in [:custom-game :wumpus-wake-choice] (:wake_choice example))
+    (swap! world assoc-in [:custom-game :wumpus-wake-choice]
+           (parse-wake-choice (:wake_choice example)))
 
     "adjacent hazards are requested for room <player_room>"
     (swap! world assoc :adjacent-hazards
@@ -229,14 +247,21 @@
     (assert= (:third_warning example) (nth (:warnings @world) 2 nil) "third warning")
 
     "the player moves to room <destination_room>"
-    (swap! world assoc :custom-game
-           (game/move-player (:custom-game @world)
-                             (parse-int (:destination_room example))))
+    (let [destination (parse-int (:destination_room example))]
+      (swap! world assoc :move-destination destination)
+      (swap! world assoc :custom-game
+             (game/move-player (:custom-game @world) destination)))
 
     "the player tries to move to room <destination_room>"
-    (swap! world assoc :custom-game
-           (game/try-move-player (:custom-game @world)
-                                 (parse-int (:destination_room example))))
+    (let [destination (parse-int (:destination_room example))]
+      (swap! world assoc :move-destination destination)
+      (swap! world assoc :custom-game
+             (game/try-move-player (:custom-game @world) destination)))
+
+    "the requested move is <expected_destination_room>"
+    (assert= (parse-int (:expected_destination_room example))
+             (:move-destination @world)
+             "requested move")
 
     "the player is in room <destination_room>"
     (assert= (parse-int (:destination_room example))
@@ -247,6 +272,21 @@
     (assert= (parse-int (:transport_room example))
              (:player-room (:custom-game @world))
              "transported player room")
+
+    "the player is in room <expected_player_room>"
+    (assert= (parse-int (:expected_player_room example))
+             (:player-room (:custom-game @world))
+             "player room")
+
+    "the player is in room <expected_transport_room>"
+    (assert= (parse-int (:expected_transport_room example))
+             (:player-room (:custom-game @world))
+             "transported player room")
+
+    "the player is in room <expected_destination_room>"
+    (assert= (parse-int (:expected_destination_room example))
+             (:player-room (:custom-game @world))
+             "player room")
 
     "the game is still in progress"
     (assert= :in-progress (:status (:custom-game @world)) "game status")
@@ -263,19 +303,21 @@
     (assert= (:message example) (:error (:custom-game @world)) "move rejection")
 
     "the player hears message <message>"
-    (when-not (some #{(:message example)} (:messages (:custom-game @world)))
-      (fail! (str "message not heard: " (:message example))))
+    (assert-message-heard (:custom-game @world) (:message example))
 
     "the player hears message <bat_message>"
-    (when-not (some #{(:bat_message example)} (:messages (:custom-game @world)))
-      (fail! (str "message not heard: " (:bat_message example))))
+    (assert-message-heard (:custom-game @world) (:bat_message example))
 
     "the player hears message <pit_message>"
-    (when-not (some #{(:pit_message example)} (:messages (:custom-game @world)))
-      (fail! (str "message not heard: " (:pit_message example))))
+    (assert-message-heard (:custom-game @world) (:pit_message example))
 
     "the Wumpus is in room <expected_wumpus_room>"
     (assert= (parse-int (:expected_wumpus_room example))
+             (:wumpus-room (:custom-game @world))
+             "Wumpus room")
+
+    "the Wumpus is in room <final_wumpus_room>"
+    (assert= (parse-int (:final_wumpus_room example))
              (:wumpus-room (:custom-game @world))
              "Wumpus room")
 
@@ -296,19 +338,47 @@
     "the player has <arrows> arrows"
     (swap! world assoc-in [:custom-game :arrows] (parse-int (:arrows example)))
 
+    "the configured setup is player <expected_player_room>, Wumpus <expected_wumpus_room>, pits <expected_pit_rooms>, bats <expected_bat_rooms>, arrows <expected_starting_arrows>"
+    (let [state (:custom-game @world)]
+      (assert= (parse-int (:expected_player_room example)) (:player-room state) "configured player room")
+      (assert= (parse-int (:expected_wumpus_room example)) (:wumpus-room state) "configured Wumpus room")
+      (assert= (set (parse-int-list (:expected_pit_rooms example))) (:pit-rooms state) "configured pit rooms")
+      (assert= (set (parse-int-list (:expected_bat_rooms example))) (:bat-rooms state) "configured bat rooms")
+      (assert= (parse-int (:expected_starting_arrows example)) (:arrows state) "configured arrows"))
+
+    "the configured setup is player <expected_player_room>, Wumpus <expected_wumpus_room>, pits <expected_pit_rooms>, bats <expected_bat_rooms>"
+    (let [state (:custom-game @world)]
+      (assert= (parse-int (:expected_player_room example)) (:player-room state) "configured player room")
+      (assert= (parse-int (:expected_wumpus_room example)) (:wumpus-room state) "configured Wumpus room")
+      (assert= (set (parse-int-list (:expected_pit_rooms example))) (:pit-rooms state) "configured pit rooms")
+      (assert= (set (parse-int-list (:expected_bat_rooms example))) (:bat-rooms state) "configured bat rooms"))
+
+    "the configured setup is player <expected_player_room>, Wumpus <setup_wumpus_room>, pits <expected_pit_rooms>, bats <expected_bat_rooms>"
+    (let [state (:custom-game @world)]
+      (assert= (parse-int (:expected_player_room example)) (:player-room state) "configured player room")
+      (assert= (parse-int (:setup_wumpus_room example)) (:wumpus-room state) "configured Wumpus room")
+      (assert= (set (parse-int-list (:expected_pit_rooms example))) (:pit-rooms state) "configured pit rooms")
+      (assert= (set (parse-int-list (:expected_bat_rooms example))) (:bat-rooms state) "configured bat rooms"))
+
     "invalid arrow movement will choose room <deviation_room>"
     (swap! world assoc-in [:custom-game :arrow-deviation-room] (parse-int (:deviation_room example)))
 
     "the player shoots path <path>"
-    (swap! world assoc :custom-game
-           (game/shoot-arrow (:custom-game @world)
-                             (parse-int-list (:path example))))
+    (let [path (parse-int-list (:path example))]
+      (swap! world assoc :shot-path path)
+      (swap! world assoc :custom-game
+             (game/shoot-arrow (:custom-game @world) path)))
 
     "the player tries to shoot path <path>"
-    (swap! world assoc :custom-game
-           (game/try-shoot-arrow
-             (:custom-game @world)
-             (if (= "none" (:path example)) [] (parse-int-list (:path example)))))
+    (let [path (parse-path (:path example))]
+      (swap! world assoc :shot-path path)
+      (swap! world assoc :custom-game
+             (game/try-shoot-arrow (:custom-game @world) path)))
+
+    "the requested path is <expected_path>"
+    (assert= (parse-path (:expected_path example))
+             (:shot-path @world)
+             "requested path")
 
     "the arrow visits rooms <visited_rooms>"
     (assert= (parse-int-list (:visited_rooms example))

@@ -69,3 +69,56 @@
   (is (thrown-with-msg? clojure.lang.ExceptionInfo
                         #"pits must contain exactly two rooms"
                         (cli/parse-args ["--pits" "1,2,3"]))))
+
+(deftest scripted-move-command-prints-visible-state
+  (let [lines (output-lines "--player" "1"
+                            "--wumpus" "13"
+                            "--pits" "14,15"
+                            "--bats" "16,17"
+                            "--commands" "m 2")]
+    (is (some #{"COMMAND: m 2"} lines))
+    (is (some #{"PLAYER: 2"} lines))
+    (is (some #{"STATUS: IN-PROGRESS"} lines))))
+
+(deftest scripted-shoot-command-prints-arrow-diagnostics
+  (let [lines (output-lines "--player" "1"
+                            "--wumpus" "13"
+                            "--pits" "14,15"
+                            "--bats" "16,17"
+                            "--arrow-deviation" "5"
+                            "--wumpus-wake" "stay"
+                            "--commands" "s 3 4")]
+    (is (some #{"ARROW PATH: 5, 4"} lines))
+    (is (some #{"ARROWS: 4"} lines))
+    (is (some #{"STATUS: IN-PROGRESS"} lines))))
+
+(deftest scripted-command-options-control-random-outcomes
+  (let [bat-lines (output-lines "--player" "1"
+                                "--wumpus" "13"
+                                "--pits" "14,15"
+                                "--bats" "2,17"
+                                "--bat-transport" "10"
+                                "--commands" "m 2")
+        wake-lines (output-lines "--player" "1"
+                                 "--wumpus" "10"
+                                 "--pits" "14,15"
+                                 "--bats" "16,17"
+                                 "--arrows" "5"
+                                 "--wumpus-wake" "1"
+                                 "--commands" "s 5")]
+    (is (some #{"ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!"} bat-lines))
+    (is (some #{"PLAYER: 10"} bat-lines))
+    (is (some #{"STATUS: LOST"} wake-lines))))
+
+(deftest scripted-invalid-commands-print-errors-without-advancing
+  (let [lines (output-lines "--player" "1"
+                            "--wumpus" "10"
+                            "--pits" "14,15"
+                            "--bats" "16,17"
+                            "--arrows" "5"
+                            "--commands" "m 3;s;x")]
+    (is (some #{"CAN'T MOVE THERE"} lines))
+    (is (some #{"CAN'T SHOOT THERE"} lines))
+    (is (some #{"X IS NOT A COMMAND"} lines))
+    (is (some #{"PLAYER: 1"} lines))
+    (is (some #{"ARROWS: 5"} lines))))
