@@ -29,7 +29,9 @@
 (defn- generated-source [feature-name ir-path]
   (str "(ns generated." (slug feature-name) "-acceptance-test\n"
        "  (:require [htw.acceptance.runtime :as runtime]))\n\n"
-       "(runtime/run-feature! " (pr-str ir-path) ")\n"))
+       "(runtime/run-feature! (or (first *command-line-args*) "
+       (pr-str ir-path)
+       "))\n"))
 
 (defn -main [& args]
   (when-not (= 2 (count args))

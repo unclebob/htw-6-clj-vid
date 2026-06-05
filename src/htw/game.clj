@@ -1,6 +1,7 @@
 (ns htw.game
   (:require [clojure.string :as str]
-            [htw.cave :as cave]))
+            [htw.cave :as cave]
+            [htw.placement :as placement]))
 
 (def pit-message "YYYIIIIEEEE . . . FELL IN PIT")
 (def bat-message "ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!")
@@ -11,14 +12,8 @@
 (def out-of-arrows-message "YOU RAN OUT OF ARROWS")
 (def invalid-shot-message "CAN'T SHOOT THERE")
 
-(defn- shuffled-rooms [seed]
-  (let [rooms (java.util.ArrayList. cave/rooms)
-        rng (java.util.Random. (long seed))]
-    (java.util.Collections/shuffle rooms rng)
-    (vec rooms)))
-
-(defn start-game [seed]
-  (let [[player wumpus pit-a pit-b bat-a bat-b] (shuffled-rooms seed)]
+(defn- place-entities [room-order]
+  (let [[player wumpus pit-a pit-b bat-a bat-b] room-order]
     {:player-room player
      :wumpus-room wumpus
      :pit-rooms #{pit-a pit-b}
@@ -41,6 +36,9 @@
       (update :messages #(or % []))
       (update :status #(or % :in-progress))
       (update :arrows #(or % 5))))
+
+(defn start-game [seed]
+  (place-entities (placement/seeded-room-order seed)))
 
 (defn reuse-setup [state]
   state)
