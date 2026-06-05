@@ -213,3 +213,16 @@ branch name: swarmforge-QA
 ```
 
 Action taken: Merged the specified QA branch state into the coder branch and preserved the coder logbook chronology while resolving overlapping role-history entries from the QA branch.
+
+## 2026-06-05 15:17:14 CDT - Received QA Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task3-shooting
+branch name: swarmforge-QA
+10-character commit hash: 9e1c64a0b2
+```
+
+Action taken: Re-read coder role and constitution, recorded the QA handoff, and prepared to merge the specified QA state without applying coder-specific work.
