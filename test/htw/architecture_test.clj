@@ -10,10 +10,15 @@
                        "spit"
                        "System/exit"
                        "htw.acceptance"
-                       "htw.ui"]
+                       "htw.ui"
+                       "htw.cli"]
    "src/htw/arrow.clj" ["htw.game"
                         "htw.ui"
-                        "htw.acceptance"]})
+                        "htw.cli"
+                        "htw.acceptance"]
+   "src/htw/ui.clj" ["htw.cli"
+                     "read-line"
+                     "println"]})
 
 (defn- file-contains? [path token]
   (str/includes? (slurp path) token))
