@@ -1,8 +1,13 @@
 .DS_Store
 .env
+.cpcache/
 .claude/
 .swarmforge/
 .worktrees/
 swarmtools/
 logs/
 agent_context/
+tmp/
+build/
+target/
+pending-messages/
