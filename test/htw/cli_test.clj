@@ -4,7 +4,19 @@
             [htw.cli :as cli]))
 
 (defn- output-lines [& args]
-  (str/split-lines (with-out-str (apply cli/-main args))))
+  (str/split-lines (with-out-str (apply cli/inspect-main args))))
+
+(deftest launch-starts-with-instructions-prompt-and-random-seed
+  (let [first-launch (cli/launch-game)
+        second-launch (cli/launch-game)]
+    (is (some #{"INSTRUCTIONS (Y-N)?"} (:output first-launch)))
+    (is (integer? (:seed first-launch)))
+    (is (not= (:seed first-launch) (:seed second-launch)))))
+
+(deftest answering-instructions-shows-first-turn
+  (let [launch (cli/launch-game)
+        continued (cli/answer-instructions launch "n")]
+    (is (some #{"SHOOT OR MOVE (S-M)?"} (:output continued)))))
 
 (deftest inspect-prints-canonical-topology-and-seeded-setup
   (let [lines (output-lines "--seed" "1973")]

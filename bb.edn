@@ -7,6 +7,8 @@
   inspect {:doc "Inspect a seeded setup through the command-line UI"
            :task (do
                    (require 'htw.cli)
-                   (apply (resolve 'htw.cli/-main) *command-line-args*))}
+                   (apply (resolve 'htw.cli/inspect-main) *command-line-args*))}
+  run {:doc "Run the interactive Hunt the Wumpus shell"
+       :task (exec 'htw.cli/-main)}
   acceptance {:doc "Run generated acceptance tests"
               :task (shell "./scripts/acceptance.sh")}}}
