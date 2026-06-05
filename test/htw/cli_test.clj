@@ -4,7 +4,19 @@
             [htw.cli :as cli]))
 
 (defn- output-lines [& args]
-  (str/split-lines (with-out-str (apply cli/-main args))))
+  (str/split-lines (with-out-str (apply cli/inspect-main args))))
+
+(deftest launch-starts-with-instructions-prompt-and-random-seed
+  (let [first-launch (cli/launch-game)
+        second-launch (cli/launch-game)]
+    (is (some #{"INSTRUCTIONS (Y-N)?"} (:output first-launch)))
+    (is (integer? (:seed first-launch)))
+    (is (not= (:seed first-launch) (:seed second-launch)))))
+
+(deftest answering-instructions-shows-first-turn
+  (let [launch (cli/launch-game)
+        continued (cli/answer-instructions launch "n")]
+    (is (some #{"SHOOT OR MOVE (S-M)?"} (:output continued)))))
 
 (deftest inspect-prints-canonical-topology-and-seeded-setup
   (let [lines (output-lines "--seed" "1973")]
@@ -110,3 +122,38 @@
     (is (some #{"X IS NOT A COMMAND"} lines))
     (is (some #{"PLAYER: 1"} lines))
     (is (some #{"ARROWS: 5"} lines))))
+
+(defn- shell-lines [input & args]
+  (str/split-lines
+    (with-out-str
+      (with-in-str input
+        (apply cli/-main args)))))
+
+(deftest shell-main-can-skip-instructions-and-win
+  (let [lines (shell-lines "n\ns 2\n"
+                           "--player" "1"
+                           "--wumpus" "2"
+                           "--pits" "14,15"
+                           "--bats" "16,17")]
+    (is (some #{"INSTRUCTIONS (Y-N)?"} lines))
+    (is (some #{"YOU ARE IN ROOM 1"} lines))
+    (is (some #{"AHA! YOU GOT THE WUMPUS!"} lines))
+    (is (some #{"HEE HEE HEE - THE WUMPUS'LL GETCHA NEXT TIME!!"} lines))))
+
+(deftest shell-main-can-show-instructions-lose-and-replay
+  (let [lines (shell-lines "y\nm 2\ny\n"
+                           "--player" "1"
+                           "--wumpus" "13"
+                           "--pits" "2,15"
+                           "--bats" "16,17")]
+    (is (some #{"WELCOME TO 'HUNT THE WUMPUS'"} lines))
+    (is (some #{"YYYIIIIEEEE . . . FELL IN PIT"} lines))
+    (is (some #{"HA HA HA - YOU LOSE!"} lines))
+    (is (some #{"SAME SET UP (Y-N)?"} lines))
+    (is (some #{"YOU ARE IN ROOM 1"} lines))))
+
+(deftest shell-main-can-observe-random-seed
+  (let [lines (shell-lines "n\n" "--show-seed" "true")]
+    (is (some #{"INSTRUCTIONS (Y-N)?"} lines))
+    (is (some #(str/starts-with? % "SEED: ") lines))
+    (is (some #{"SHOOT OR MOVE (S-M)?"} lines))))

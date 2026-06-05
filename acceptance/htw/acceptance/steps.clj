@@ -1,7 +1,9 @@
 (ns htw.acceptance.steps
   (:require [clojure.string :as str]
             [htw.cave :as cave]
-            [htw.game :as game]))
+            [htw.cli :as cli]
+            [htw.game :as game]
+            [htw.ui :as ui]))
 
 (defn- fail! [message]
   (throw (ex-info message {})))
@@ -48,6 +50,10 @@
   (when-not (some #{message} (:messages state))
     (fail! (str "message not heard: " message))))
 
+(defn- assert-output-contains [world line label]
+  (when-not (some #{line} (:output @world))
+    (fail! (str "output missing " label ": " line))))
+
 (defn- seed-from-start-step [expanded]
   (when-let [[_ seed] (re-matches #"a game is started with seed ([0-9]+)" expanded)]
     (parse-int seed)))
@@ -56,6 +62,15 @@
   (case text
     "a new Hunt the Wumpus game specification"
     (swap! world assoc :specification true)
+
+    "the terminal game is started with a scripted setup"
+    (swap! world assoc :terminal true :custom-game (game/configured-game 1 2 #{} #{}))
+
+    "the terminal game has not started play"
+    (swap! world assoc :custom-game (game/start-game 1973) :output [])
+
+    "the project command directory is available on the shell path"
+    (swap! world assoc :command-path "bin")
 
     "the cave topology is inspected"
     (swap! world assoc :topology cave/topology)
@@ -169,6 +184,16 @@
     "a game has the player in room <player_room>"
     (swap! world assoc-in [:custom-game :player-room] (parse-int (:player_room example)))
 
+    "the player is in room <player_room>"
+    (swap! world assoc-in [:custom-game :player-room] (parse-int (:player_room example)))
+
+    "the player is in room <start_room>"
+    (if (or (:error (:custom-game @world)) (:output @world))
+      (assert= (parse-int (:start_room example))
+               (:player-room (:custom-game @world))
+               "player room")
+      (swap! world assoc-in [:custom-game :player-room] (parse-int (:start_room example))))
+
     "a game has the player in room <start_room>"
     (swap! world assoc-in [:custom-game :player-room] (parse-int (:start_room example)))
 
@@ -181,12 +206,22 @@
     "bats are in rooms <bat_rooms>"
     (swap! world assoc-in [:custom-game :bat-rooms] (set (parse-int-list (:bat_rooms example))))
 
-    "bat transport will choose room <transport_room>"
-    (swap! world assoc-in [:custom-game :bat-transport-room] (parse-int (:transport_room example)))
+        "bat transport will choose room <transport_room>"
+        (swap! world assoc-in [:custom-game :bat-transport-room] (parse-int (:transport_room example)))
 
-    "the Wumpus wake choice is <wake_choice>"
-    (swap! world assoc-in [:custom-game :wumpus-wake-choice]
-           (parse-wake-choice (:wake_choice example)))
+        "the configured bat transport room is <expected_transport_room>"
+        (assert= (parse-int (:expected_transport_room example))
+                 (:bat-transport-room (:custom-game @world))
+                 "configured bat transport room")
+
+        "the Wumpus wake choice is <wake_choice>"
+        (swap! world assoc-in [:custom-game :wumpus-wake-choice]
+               (parse-wake-choice (:wake_choice example)))
+
+        "the configured Wumpus wake choice is <expected_wake_choice>"
+        (assert= (parse-wake-choice (:expected_wake_choice example))
+                 (:wumpus-wake-choice (:custom-game @world))
+                 "configured Wumpus wake choice")
 
     "adjacent hazards are requested for room <player_room>"
     (swap! world assoc :adjacent-hazards
@@ -244,11 +279,6 @@
 
     "the player is in room <destination_room>"
     (assert= (parse-int (:destination_room example))
-             (:player-room (:custom-game @world))
-             "player room")
-
-    "the player is in room <start_room>"
-    (assert= (parse-int (:start_room example))
              (:player-room (:custom-game @world))
              "player room")
 
@@ -341,6 +371,9 @@
       (assert= (set (parse-int-list (:expected_pit_rooms example))) (:pit-rooms state) "configured pit rooms")
       (assert= (set (parse-int-list (:expected_bat_rooms example))) (:bat-rooms state) "configured bat rooms"))
 
+    "the player has <arrows> arrows"
+    (swap! world assoc-in [:custom-game :arrows] (parse-int (:arrows example)))
+
     "invalid arrow movement will choose room <deviation_room>"
     (swap! world assoc-in [:custom-game :arrow-deviation-room] (parse-int (:deviation_room example)))
 
@@ -376,6 +409,166 @@
 
     "the shot is rejected with message <message>"
     (assert= (:message example) (:error (:custom-game @world)) "shot rejection")
+
+        "the player enters command <command>"
+        (let [{:keys [state output]} (ui/enter-command (:custom-game @world) (:command example))]
+          (swap! world assoc :custom-game state :output output :entered-command (:command example)))
+
+        "the entered command is <expected_command>"
+        (assert= (:expected_command example) (:entered-command @world) "entered command")
+
+    "the player runs shell command <command>"
+    (if (= "htw" (:command example))
+      (let [{:keys [state output seed] :as launch} (cli/launch-game)]
+        (swap! world assoc :launch launch :custom-game state :output output :seed seed))
+      (fail! (str "unknown shell command: " (:command example))))
+
+    "the player runs shell command <command> for the first game"
+    (if (= "htw" (:command example))
+      (swap! world assoc :first-launch (cli/launch-game))
+      (fail! (str "unknown shell command: " (:command example))))
+
+    "the player exits before taking a turn"
+    true
+
+    "the player runs shell command <command> for the second game"
+    (if (= "htw" (:command example))
+      (swap! world assoc :second-launch (cli/launch-game))
+      (fail! (str "unknown shell command: " (:command example))))
+
+    "the terminal game starts"
+    (when-not (some #{cli/instructions-prompt} (:output @world))
+      (fail! "terminal game did not start at instructions prompt"))
+
+    "the game uses a random seed"
+    (when-not (integer? (:seed @world))
+      (fail! "game did not use an integer random seed"))
+
+    "the first game seed is different from the second game seed"
+    (assert= false
+             (= (:seed (:first-launch @world)) (:seed (:second-launch @world)))
+             "fresh random seeds")
+
+    "both games have valid placements"
+    (doseq [launch [(:first-launch @world) (:second-launch @world)]]
+      (when-not (every? (set cave/rooms) (game/occupied-rooms (:state launch)))
+        (fail! "launch placement is invalid")))
+
+    "the next turn shows room <expected_room>"
+    (assert= (parse-int (:expected_room example))
+             (:player-room (:custom-game @world))
+             "next turn room")
+
+    "the next prompt shows room <start_room>"
+    (when-not (some #{(str "YOU ARE IN ROOM " (:start_room example))} (:output @world))
+      (fail! (str "next prompt did not show room " (:start_room example))))
+
+    "the player still has <arrows> arrows"
+    (assert= (parse-int (:arrows example))
+             (:arrows (:custom-game @world))
+             "arrows")
+
+    "the output contains line <message>"
+    (assert-output-contains world (:message example) "line")
+
+    "the output contains line <win_message>"
+    (assert-output-contains world (:win_message example) "line")
+
+    "the output contains line <taunt_message>"
+    (assert-output-contains world (:taunt_message example) "line")
+
+    "the output contains line <loss_message>"
+    (assert-output-contains world (:loss_message example) "line")
+
+    "the output contains line <bat_message>"
+    (assert-output-contains world (:bat_message example) "line")
+
+    "the output contains prompt <replay_prompt>"
+    (assert-output-contains world (:replay_prompt example) "prompt")
+
+    "the output contains prompt <prompt>"
+    (assert-output-contains world (:prompt example) "prompt")
+
+    "the output contains prompt <instructions_prompt>"
+    (when-not (some #{(:instructions_prompt example)} (:output @world))
+      (fail! (str "output missing prompt: " (:instructions_prompt example))))
+
+    "the output contains prompt <turn_prompt>"
+    (when-not (some #{(:turn_prompt example)} (:output @world))
+      (fail! (str "output missing prompt: " (:turn_prompt example))))
+
+    "the next turn is displayed"
+    (let [{:keys [state output]} (ui/display-turn (:custom-game @world))]
+      (swap! world assoc :custom-game state :output output))
+
+    "the output contains line <room_line>"
+    (assert-output-contains world (:room_line example) "line")
+
+    "the output contains line <tunnel_line>"
+    (assert-output-contains world (:tunnel_line example) "line")
+
+    "the output contains line <arrows_line>"
+    (assert-output-contains world (:arrows_line example) "line")
+
+    "the output contains warnings <warnings>"
+    (let [warnings (parse-warnings (:warnings example))]
+      (if (seq warnings)
+        (doseq [warning warnings]
+          (when-not (some #{warning} (:output @world))
+            (fail! (str "output missing warning: " warning))))
+        (doseq [warning ["I SMELL A WUMPUS" "BATS NEARBY" "I FEEL A DRAFT"]]
+          (when (some #{warning} (:output @world))
+            (fail! (str "unexpected warning: " warning))))))
+
+        "the player loses with command <loss_command>"
+        (let [{:keys [state output]} (ui/enter-command (:custom-game @world) (:loss_command example))]
+          (swap! world assoc :custom-game state :output output :loss-command (:loss_command example)))
+
+        "the loss command is <expected_loss_command>"
+        (assert= (:expected_loss_command example) (:loss-command @world) "loss command")
+
+        "the player answers same setup prompt with <answer>"
+        (swap! world assoc
+               :next-game (ui/replay (:custom-game @world) (:answer example))
+               :replay-answer (:answer example))
+
+        "the replay answer is <expected_answer>"
+        (assert= (:expected_answer example) (:replay-answer @world) "replay answer")
+
+    "the next game has player room <player_room>"
+    (assert= (parse-int (:player_room example)) (:player-room (:next-game @world)) "next player room")
+
+    "the next game has Wumpus room <wumpus_room>"
+    (assert= (parse-int (:wumpus_room example)) (:wumpus-room (:next-game @world)) "next Wumpus room")
+
+    "the next game has pit rooms <pit_rooms>"
+    (assert= (set (parse-int-list (:pit_rooms example))) (:pit-rooms (:next-game @world)) "next pit rooms")
+
+    "the next game has bat rooms <bat_rooms>"
+    (assert= (set (parse-int-list (:bat_rooms example))) (:bat-rooms (:next-game @world)) "next bat rooms")
+
+    "the next game has a valid placement"
+    (when-not (every? (set cave/rooms) (game/occupied-rooms (:next-game @world)))
+      (fail! "next game placement is invalid"))
+
+    "the next game is not required to preserve the previous placement"
+    true
+
+        "the player answers instructions prompt with <answer>"
+        (let [{:keys [state output]} (ui/answer-instructions (:custom-game @world) (:answer example))]
+          (swap! world assoc :custom-game state :output output :instructions-answer (:answer example)))
+
+        "the instructions answer is <expected_answer>"
+        (assert= (:expected_answer example) (:instructions-answer @world) "instructions answer")
+
+    "the output includes instructions text <includes_instructions>"
+    (let [expected? (= "true" (:includes_instructions example))
+          present? (boolean (some #{"WELCOME TO 'HUNT THE WUMPUS'"} (:output @world)))]
+      (assert= expected? present? "instructions presence"))
+
+    "the first turn is displayed"
+    (when-not (some #{ui/turn-prompt} (:output @world))
+      (fail! "first turn was not displayed"))
 
     "both games have the same player room"
     (assert= (:player-room (:game @world))
