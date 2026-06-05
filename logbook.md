@@ -201,6 +201,19 @@ branch name: swarmforge-QA
 
 Action taken: Re-read coder role and constitution, recorded the QA handoff, and prepared to merge the specified QA state without applying coder-specific work.
 
+## 2026-06-05 15:40:14 CDT - QA Merge Resolution
+
+Message:
+```
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 27d865d235
+```
+
+Action taken: Merged the specified QA branch state into the coder branch and preserved the coder logbook chronology while resolving overlapping role-history entries from the QA branch.
+
 ## 2026-06-05 15:17:14 CDT - QA Merge Resolution
 
 Message:

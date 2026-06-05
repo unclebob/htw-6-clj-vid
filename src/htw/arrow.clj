@@ -26,5 +26,5 @@
       visited)))
 
 ;; clj-mutate-manifest-begin
-;; {:version 1, :tested-at "2026-06-05T15:05:53.021971-05:00", :module-hash "95074093", :forms [{:id "form/0/ns", :kind "ns", :line 1, :end-line 2, :hash "1606095398"} {:id "defn-/fallback-room", :kind "defn-", :line 4, :end-line 6, :hash "-1507227820"} {:id "defn-/next-room", :kind "defn-", :line 8, :end-line 14, :hash "331777666"} {:id "defn/visits", :kind "defn", :line 16, :end-line 26, :hash "-1427565324"}]}
+;; {:version 1, :tested-at "2026-06-05T15:25:54.633955-05:00", :module-hash "95074093", :forms [{:id "form/0/ns", :kind "ns", :line 1, :end-line 2, :hash "1606095398"} {:id "defn-/fallback-room", :kind "defn-", :line 4, :end-line 6, :hash "-1507227820"} {:id "defn-/next-room", :kind "defn-", :line 8, :end-line 14, :hash "331777666"} {:id "defn/visits", :kind "defn", :line 16, :end-line 26, :hash "-1427565324"}]}
 ;; clj-mutate-manifest-end
