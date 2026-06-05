@@ -324,6 +324,20 @@ branch name: swarmforge-architect
 
 Reason for note: message arrived while task1-setup hardening was in progress; processing together with the queued task2-movement architect handoff after task1 QA handoff was sent. The supplied abbreviated hash did not resolve; resolved to matching architect handoff commit `98217e7cd2...`.
 
+## 2026-06-05 15:07:33 CDT - Sent handoff to QA
+
+Complete handoff message sent:
+
+```
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: task3-shooting
+branch name: swarmforge-hardender
+10-character commit hash: a55ed8bef5
+```
+
+Summary: Combined task2/task3 hardening completed and committed for QA review.
+
 ## 2026-06-05 14:45:23 CDT
 
 Sent handoff to hardender.
