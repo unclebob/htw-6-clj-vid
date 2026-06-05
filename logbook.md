@@ -15,3 +15,17 @@ branch name: master
 ```
 
 Summary: Task 1 setup behavior specifications and end-to-end QA suite are ready for coder review.
+
+## 2026-06-05 14:03:14 CDT - sent handoff to coder
+
+Complete handoff message:
+
+```text
+Re-read your role and constitution.
+sender role: specifier
+specifier handoff name: task2-movement
+branch name: master
+10-character commit hash: 09200f8067
+```
+
+Summary: Task 2 movement, warning, hazard, and Wumpus wake specifications and end-to-end QA suite are ready for coder review.
