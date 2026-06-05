@@ -376,6 +376,22 @@ branch name: swarmforge-QA
 
 Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
 
+## 2026-06-05 15:40:31 CDT
+
+Received QA handoff.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 27d865d235
+```
+
+Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
+
 ## 2026-06-05 15:17:23 CDT
 
 Received QA handoff.
