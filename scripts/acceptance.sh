@@ -9,12 +9,12 @@ fi
 rm -rf build/acceptance
 mkdir -p build/acceptance/ir build/acceptance/generated
 
-for feature in features/domain/*.feature; do
+while IFS= read -r feature; do
   name="$(basename "$feature" .feature)"
   ir="build/acceptance/ir/${name}.json"
   "$parser" "$feature" "$ir"
   ./scripts/acceptance-entrypoint-generator "$ir" build/acceptance/generated
-done
+done < <(find features -name '*.feature' -type f | sort)
 
 for generated in build/acceptance/generated/*_acceptance_test.clj; do
   bb "$generated"
