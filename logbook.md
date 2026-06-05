@@ -326,6 +326,34 @@ branch name: swarmforge-architect
 
 Summary: Architect merged task4 game loop and added architecture coverage that keeps UI dependencies out of the domain namespaces.
 
+## 2026-06-05 14:51:25 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-cleaner
+10-character commit hash: f1f19d8add
+```
+
+Reason for note: message arrived while task3-shooting work was in progress and was processed after completing the earlier queued task4-game-loop handoff.
+
+## 2026-06-05 14:51:25 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-cleaner
+10-character commit hash: f1f19d8add
+```
+
+Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+
 ## 2026-06-05 14:34:58 CDT
 
 Sent handoff to architect.
