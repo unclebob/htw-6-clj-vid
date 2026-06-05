@@ -14,7 +14,7 @@
         rejected (game/try-move-player state 3)]
     (is (= 2 (:player-room moved)))
     (is (= :in-progress (:status moved)))
-    (is (= "CAN'T MOVE THERE" (:error rejected)))
+    (is (= game/invalid-move-message (:error rejected)))
     (is (= 1 (:player-room rejected)))
     (is (= :in-progress (:status rejected)))))
 
@@ -27,13 +27,12 @@
                   (configured-game 1 13 [10 15] [2 17] {:bat-transport-room 10})
                   2)]
     (is (= :lost (:status pit-loss)))
-    (is (= ["YYYIIIIEEEE . . . FELL IN PIT"] (:messages pit-loss)))
+    (is (= [game/pit-message] (:messages pit-loss)))
     (is (= 10 (:player-room bat-safe)))
     (is (= :in-progress (:status bat-safe)))
-    (is (= ["ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!"] (:messages bat-safe)))
+    (is (= [game/bat-message] (:messages bat-safe)))
     (is (= :lost (:status bat-pit)))
-    (is (= ["ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!"
-            "YYYIIIIEEEE . . . FELL IN PIT"]
+    (is (= [game/bat-message game/pit-message]
            (:messages bat-pit)))))
 
 (deftest warnings-are-adjacent-stable-and-deduplicated

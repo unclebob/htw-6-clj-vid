@@ -28,6 +28,10 @@
   (when-not (= expected actual)
     (fail! (str message " expected " (pr-str expected) " but was " (pr-str actual)))))
 
+(defn- assert-message-heard [state message]
+  (when-not (some #{message} (:messages state))
+    (fail! (str "message not heard: " message))))
+
 (defn- seed-from-start-step [expanded]
   (when-let [[_ seed] (re-matches #"a game is started with seed ([0-9]+)" expanded)]
     (parse-int seed)))
@@ -209,16 +213,13 @@
     (assert= (:message example) (:error (:custom-game @world)) "move rejection")
 
     "the player hears message <message>"
-    (when-not (some #{(:message example)} (:messages (:custom-game @world)))
-      (fail! (str "message not heard: " (:message example))))
+    (assert-message-heard (:custom-game @world) (:message example))
 
     "the player hears message <bat_message>"
-    (when-not (some #{(:bat_message example)} (:messages (:custom-game @world)))
-      (fail! (str "message not heard: " (:bat_message example))))
+    (assert-message-heard (:custom-game @world) (:bat_message example))
 
     "the player hears message <pit_message>"
-    (when-not (some #{(:pit_message example)} (:messages (:custom-game @world)))
-      (fail! (str "message not heard: " (:pit_message example))))
+    (assert-message-heard (:custom-game @world) (:pit_message example))
 
     "the Wumpus is in room <expected_wumpus_room>"
     (assert= (parse-int (:expected_wumpus_room example))

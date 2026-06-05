@@ -4,6 +4,8 @@
 
 (def pit-message "YYYIIIIEEEE . . . FELL IN PIT")
 (def bat-message "ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!")
+(def invalid-move-message "CAN'T MOVE THERE")
+(def move-choice-prefix "move to ")
 
 (defn- shuffled-rooms [seed]
   (let [rooms (java.util.ArrayList. cave/rooms)
@@ -64,14 +66,27 @@
 (defn- append-message [state message]
   (update state :messages (fnil conj []) message))
 
+(defn- move-choice? [choice]
+  (and (string? choice)
+       (str/starts-with? choice move-choice-prefix)))
+
+(defn- parse-move-choice [choice]
+  (Long/parseLong (subs choice (count move-choice-prefix))))
+
+(defn- wake-choice-handlers [state]
+  [[#(= "stay" %) (constantly (:wumpus-room state))]
+   [move-choice? parse-move-choice]
+   [integer? identity]])
+
+(defn- selected-wake-room [state choice]
+  (some (fn [[matches? room]]
+          (when (matches? choice)
+            (room choice)))
+        (wake-choice-handlers state)))
+
 (defn- wake-choice-room [state]
-  (let [choice (:wumpus-wake-choice state)]
-    (cond
-      (= choice "stay") (:wumpus-room state)
-      (and (string? choice) (str/starts-with? choice "move to "))
-      (Long/parseLong (subs choice (count "move to ")))
-      (integer? choice) choice
-      :else (first (wumpus-wake-options state)))))
+  (or (selected-wake-room state (:wumpus-wake-choice state))
+      (first (wumpus-wake-options state))))
 
 (declare resolve-arrival)
 
@@ -107,9 +122,9 @@
 
 (defn try-move-player [state destination-room]
   (let [state (normalize-state state)]
-    (if (contains? (set (cave/exits (:player-room state))) destination-room)
+    (if (cave/connected? (:player-room state) destination-room)
       (resolve-arrival (assoc state :player-room destination-room))
-      (assoc state :error "CAN'T MOVE THERE"))))
+      (assoc state :error invalid-move-message))))
 
 (defn move-player [state destination-room]
   (try-move-player state destination-room))
