@@ -18,10 +18,10 @@
   state)
 
 (defn hazard-rooms [{:keys [wumpus-room pit-rooms bat-rooms]}]
-  (set (concat [wumpus-room] pit-rooms bat-rooms)))
+  (into #{wumpus-room} (concat pit-rooms bat-rooms)))
 
 (defn occupied-rooms [{:keys [player-room] :as state}]
-  (conj (hazard-rooms state) player-room))
+  (into #{player-room} (hazard-rooms state)))
 
 (defn adjacent-hazards [{:keys [wumpus-room pit-rooms bat-rooms]} room]
   (let [neighbors (set (cave/exits room))]

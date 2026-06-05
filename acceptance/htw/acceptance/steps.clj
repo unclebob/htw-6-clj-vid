@@ -18,9 +18,6 @@
   (when-not (= expected actual)
     (fail! (str message " expected " (pr-str expected) " but was " (pr-str actual)))))
 
-(defn- one-room? [value]
-  (contains? (set cave/rooms) value))
-
 (defn- seed-from-start-step [expanded]
   (when-let [[_ seed] (re-matches #"a game is started with seed ([0-9]+)" expanded)]
     (parse-int seed)))
@@ -50,7 +47,7 @@
       (fail! "not every tunnel is bidirectional"))
 
     "no room has an exit to itself"
-    (when (some #(contains? (set (cave/exits %)) %) cave/rooms)
+    (when (some cave/self-exiting? cave/rooms)
       (fail! "a room exits to itself"))
 
     "every room is reachable from room 1"
@@ -63,11 +60,11 @@
     (swap! world assoc :second-game (game/start-game (parse-int (:seed example))))
 
     "the player occupies one room"
-    (when-not (one-room? (:player-room (:game @world)))
+    (when-not (cave/room? (:player-room (:game @world)))
       (fail! "player does not occupy one valid room"))
 
     "the Wumpus occupies one room"
-    (when-not (one-room? (:wumpus-room (:game @world)))
+    (when-not (cave/room? (:wumpus-room (:game @world)))
       (fail! "Wumpus does not occupy one valid room"))
 
     "there are 2 pit rooms"
@@ -80,7 +77,7 @@
     (assert= 6 (count (game/occupied-rooms (:game @world))) "occupied room count")
 
     "every occupied room is numbered from 1 through 20"
-    (when-not (every? one-room? (game/occupied-rooms (:game @world)))
+    (when-not (every? cave/room? (game/occupied-rooms (:game @world)))
       (fail! "an occupied room is outside 1 through 20"))
 
     "there are 5 hazard rooms"

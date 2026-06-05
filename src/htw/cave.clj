@@ -24,21 +24,43 @@
 
 (def rooms (vec (sort (keys topology))))
 
+(def room-set (set rooms))
+
+(def exit-sets
+  (into {}
+        (map (fn [[room exits]]
+               [room (set exits)]))
+        topology))
+
+(defn room? [room]
+  (contains? room-set room))
+
 (defn exits [room]
   (get topology room))
+
+(defn connected? [from-room to-room]
+  (contains? (get exit-sets from-room #{}) to-room))
+
+(defn self-exiting? [room]
+  (connected? room room))
 
 (defn bidirectional? []
   (every?
     (fn [[room exits]]
-      (every? #(contains? (set (get topology %)) room) exits))
+      (every? #(connected? % room) exits))
     topology))
 
+(defn- expand-reachable [{:keys [seen frontier]}]
+  (let [next-seen (into seen frontier)]
+    {:seen next-seen
+     :frontier (->> frontier
+                    (mapcat exits)
+                    (remove next-seen)
+                    set)}))
+
 (defn reachable-from [start-room]
-  (loop [seen #{}
-         frontier [start-room]]
-    (if-let [room (first frontier)]
-      (if (seen room)
-        (recur seen (subvec (vec frontier) 1))
-        (recur (conj seen room)
-               (into (subvec (vec frontier) 1) (exits room))))
-      seen)))
+  (->> {:seen #{} :frontier #{start-room}}
+       (iterate expand-reachable)
+       (drop-while (comp seq :frontier))
+       first
+       :seen))

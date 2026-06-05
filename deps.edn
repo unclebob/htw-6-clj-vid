@@ -1,0 +1,16 @@
+{:paths ["src" "test" "acceptance"]
+ :aliases
+ {:cov {:extra-deps {cloverage/cloverage {:mvn/version "1.2.4"}}
+        :main-opts ["-m" "cloverage.coverage" "-p" "src" "-s" "test"]}
+  :crap {:extra-deps {com.github.unclebob/crap4clj
+                      {:git/url "https://github.com/unclebob/crap4clj.git"
+                       :git/sha "977c26cc2d4318294917242c313106e1507bd4f6"}}
+         :main-opts ["-m" "crap4clj.core"]}
+  :dry4clj {:extra-deps {com.github.unclebob/dry4clj
+                         {:git/url "https://github.com/unclebob/dry4clj.git"
+                          :git/sha "76094cf24573a1daef1af9f9c8a0616f6b9444d2"}}
+            :main-opts ["-m" "dry4clj.core"]}
+  :mutate {:extra-deps {com.github.unclebob/clj-mutate
+                        {:git/url "https://github.com/unclebob/clj-mutate.git"
+                         :git/sha "1d5421ab49b3a4816af05bca78d4df7e23b7d027"}}
+           :main-opts ["-m" "clj-mutate.core"]}}}
