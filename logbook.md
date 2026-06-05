@@ -338,6 +338,20 @@ branch name: swarmforge-hardender
 
 Summary: Combined task2/task3 hardening completed and committed for QA review.
 
+## 2026-06-05 15:08:16 CDT - Queued QA handoff processed
+
+Complete queued handoff message:
+
+```
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task1-setup
+branch name: swarmforge-QA
+10-character commit hash: 3f3ce9bd27
+```
+
+Reason for note: message arrived while task2/task3 hardening was in progress; processing after completing and sending the required task3-shooting QA handoff. Per workflow, merging the named QA state and applying no hardender-specific work to this QA handoff.
+
 ## 2026-06-05 14:45:23 CDT
 
 Sent handoff to hardender.
