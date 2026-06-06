@@ -38,6 +38,16 @@
     (is (= :won (:status (:state win))))
     (is (some #{"HEE HEE HEE - THE WUMPUS'LL GETCHA NEXT TIME!!"} (:output win)))))
 
+(deftest in-progress-event-messages-are-printed-once
+  (let [bat-state (assoc (configured-game 1 13 [14 15] [2 17])
+                         :bat-transport-room 10)
+        transported (ui/enter-command bat-state "m 2")
+        continued (ui/enter-command (:state transported) "m 11")]
+    (is (= :in-progress (:status (:state transported))))
+    (is (some #{game/bat-message} (:output transported)))
+    (is (= [] (:messages (:state transported))))
+    (is (not-any? #{game/bat-message} (:output continued)))))
+
 (deftest replay-can-preserve-setup
   (let [state (configured-game 1 13 [2 15] [16 17])
         lost (:state (ui/enter-command state "m 2"))

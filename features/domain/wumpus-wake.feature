@@ -20,11 +20,13 @@ Feature: Wumpus wake and movement
     Then the requested move is <expected_destination_room>
     And the Wumpus is in room <expected_wumpus_room>
     And the game is <outcome>
+    And the player hears message <bump_message>
+    And the player hears message <got_you_message>
 
     Examples:
-      | start_room | destination_room | wumpus_room | pit_rooms | bat_rooms | expected_player_room | expected_destination_room | setup_wumpus_room | expected_pit_rooms | expected_bat_rooms | wake_choice | expected_wumpus_room | outcome     |
-      | 1          | 2                | 2           | 14, 15    | 16, 17    | 1                    | 2                         | 2                 | 14, 15             | 16, 17             | stay        | 2                    | lost        |
-      | 1          | 2                | 2           | 14, 15    | 16, 17    | 1                    | 2                         | 2                 | 14, 15             | 16, 17             | move to 3   | 3                    | in progress |
+      | start_room | destination_room | wumpus_room | pit_rooms | bat_rooms | expected_player_room | expected_destination_room | setup_wumpus_room | expected_pit_rooms | expected_bat_rooms | wake_choice | expected_wumpus_room | outcome     | bump_message                 | got_you_message               |
+      | 1          | 2                | 2           | 14, 15    | 16, 17    | 1                    | 2                         | 2                 | 14, 15             | 16, 17             | stay        | 2                    | lost        | ... OOPS! BUMPED A WUMPUS!  | TSK TSK TSK - WUMPUS GOT YOU! |
+      | 1          | 2                | 2           | 14, 15    | 16, 17    | 1                    | 2                         | 2                 | 14, 15             | 16, 17             | move to 3   | 3                    | in progress | ... OOPS! BUMPED A WUMPUS!  | none                          |
 
   # Wumpus wake and movement 002
   Scenario Outline: Wumpus wake and movement 002: Wumpus wake choices are limited to its room and neighbors

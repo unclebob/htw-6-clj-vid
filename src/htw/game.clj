@@ -9,6 +9,8 @@
 (def invalid-move-message "CAN'T MOVE THERE")
 (def wumpus-hit-message "AHA! YOU GOT THE WUMPUS!")
 (def self-hit-message "OOPS! ARROW GOT YOU!")
+(def wumpus-bump-message "... OOPS! BUMPED A WUMPUS!")
+(def wumpus-got-you-message "TSK TSK TSK - WUMPUS GOT YOU!")
 (def out-of-arrows-message "YOU RAN OUT OF ARROWS")
 (def invalid-shot-message "CAN'T SHOOT THERE")
 
@@ -99,6 +101,12 @@
       (assoc moved :status :lost)
       moved)))
 
+(defn- wake-bumped-wumpus [state]
+  (let [woken (wake-wumpus (append-message state wumpus-bump-message))]
+    (if (= :lost (:status woken))
+      (append-message woken wumpus-got-you-message)
+      woken)))
+
 (defn- transport-room [{:keys [bat-transport-room bat-rooms] :as state}]
   (if (and bat-transport-room (not (contains? bat-rooms bat-transport-room)))
     bat-transport-room
@@ -121,7 +129,7 @@
           (resolve-arrival))
 
       (= wumpus-room player-room)
-      (wake-wumpus state)
+      (wake-bumped-wumpus state)
 
       :else state)))
 

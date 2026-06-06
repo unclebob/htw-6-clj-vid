@@ -2,6 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.test :refer [deftest is]]
             [htw.cli :as cli]
+            [htw.game :as game]
             [htw.inspection :as inspection]))
 
 (defn- inspection-output-lines [& args]
@@ -181,8 +182,53 @@
                                  "SAME SET UP (Y-N)?"
                                  "YOU ARE IN ROOM 1"])))
 
+(deftest shell-main-prints-wumpus-bump-messages
+  (let [escaped (shell-lines "n\nm 2\n"
+                             "--player" "1"
+                             "--wumpus" "2"
+                             "--pits" "14,15"
+                             "--bats" "16,17"
+                             "--wumpus-wake" "3")
+        eaten (shell-lines "n\nm 2\n"
+                           "--player" "1"
+                           "--wumpus" "2"
+                           "--pits" "14,15"
+                           "--bats" "16,17"
+                           "--wumpus-wake" "stay")]
+    (assert-lines-contain escaped [game/wumpus-bump-message
+                                   "YOU ARE IN ROOM 2"])
+    (assert-lines-contain eaten [game/wumpus-bump-message
+                                 game/wumpus-got-you-message
+                                 "HA HA HA - YOU LOSE!"])))
+
+(deftest shell-main-prints-safe-bat-transport-message
+  (let [lines (shell-lines "n\nm 2\nm 11\n"
+                           "--player" "1"
+                           "--wumpus" "13"
+                           "--pits" "14,15"
+                           "--bats" "2,17"
+                           "--bat-transport" "10")]
+    (is (= 1 (count (filter #{game/bat-message} lines))))
+    (assert-lines-contain lines ["ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!"
+                                 "YOU ARE IN ROOM 10"
+                                 "YOU ARE IN ROOM 11"])
+    (is (not-any? #(str/starts-with? % "PLAYER:") lines))
+    (is (not-any? #(str/starts-with? % "WUMPUS:") lines))))
+
 (deftest shell-main-can-observe-random-seed
   (let [lines (shell-lines "n\n" "--show-seed" "true")]
     (is (some #{"INSTRUCTIONS (Y-N)?"} lines))
     (is (some #(str/starts-with? % "SEED: ") lines))
     (is (some #{"SHOOT OR MOVE (S-M)?"} lines))))
+
+(deftest shell-main-show-seed-enables-command-observations
+  (let [lines (shell-lines "n\nm 2\n"
+                           "--player" "1"
+                           "--wumpus" "13"
+                           "--pits" "14,15"
+                           "--bats" "16,17"
+                           "--seed" "42"
+                           "--show-seed" "true")]
+    (assert-lines-contain lines ["SEED: 42"
+                                 "PLAYER: 2"
+                                 "WUMPUS: 13"])))

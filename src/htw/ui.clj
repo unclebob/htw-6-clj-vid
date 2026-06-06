@@ -43,16 +43,22 @@
     (conj (:messages state) loss-taunt replay-prompt)
 
     :else
-    (:output (display-turn state))))
+    (concat (:messages state) (:output (display-turn state)))))
 
 (defn- observation-output [state]
-  (cond-> [(str "PLAYER: " (:player-room state))
-           (str "WUMPUS: " (:wumpus-room state))]
-    (:arrow-visits state)
-    (conj (str "ARROW PATH: " (str/join ", " (:arrow-visits state))))))
+  (when (:show-observations state)
+    (cond-> [(str "PLAYER: " (:player-room state))
+             (str "WUMPUS: " (:wumpus-room state))]
+      (:arrow-visits state)
+      (conj (str "ARROW PATH: " (str/join ", " (:arrow-visits state)))))))
+
+(defn- clear-consumed-messages [state]
+  (if (= :in-progress (:status state))
+    (assoc state :messages [])
+    state))
 
 (defn- result [state extra-output]
-  {:state state
+  {:state (clear-consumed-messages state)
    :output (vec (concat extra-output (observation-output state) (terminal-output state)))})
 
 (defn- invalid-result [state message]

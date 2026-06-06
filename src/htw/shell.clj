@@ -25,7 +25,9 @@
 
 (defn- with-observed-seed [launch show-seed?]
   (if show-seed?
-    (update launch :output conj (str "SEED: " (:seed launch)))
+    (-> launch
+        (update :state assoc :show-observations true)
+        (update :output conj (str "SEED: " (:seed launch))))
     launch))
 
 (defn- initial-launch [args]

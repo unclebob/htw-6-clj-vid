@@ -80,9 +80,13 @@
                  (configured-game 1 10 [2 14] [9 17] {:wumpus-wake-choice 2}))]
     (is (= :lost (:status lost)))
     (is (= 2 (:wumpus-room lost)))
+    (is (= [game/wumpus-bump-message game/wumpus-got-you-message]
+           (:messages lost)))
     (is (= :in-progress (:status escaped)))
     (is (= 3 (:wumpus-room escaped)))
+    (is (= [game/wumpus-bump-message] (:messages escaped)))
     (is (= :in-progress (:status immune)))
+    (is (= [] (:messages immune)))
     (is (= 2 (:wumpus-room immune)))))
 
 (deftest seeded-wumpus-wake-varies-across-seeds

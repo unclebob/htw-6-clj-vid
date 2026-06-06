@@ -53,6 +53,10 @@
   (when-not (some #{message} (:messages state))
     (fail! (str "message not heard: " message))))
 
+(defn- assert-optional-message-heard [state message]
+  (when-not (= "none" (str/trim (str message)))
+    (assert-message-heard state message)))
+
 (defn- assert-output-contains [world line label]
   (when-not (some #{line} (:output @world))
     (fail! (str "output missing " label ": " line))))
@@ -441,6 +445,12 @@
 
     "the player hears message <pit_message>"
     (assert-message-heard (:custom-game @world) (:pit_message example))
+
+    "the player hears message <bump_message>"
+    (assert-optional-message-heard (:custom-game @world) (:bump_message example))
+
+    "the player hears message <got_you_message>"
+    (assert-optional-message-heard (:custom-game @world) (:got_you_message example))
 
     "the Wumpus is in room <expected_wumpus_room>"
     (assert= (parse-int (:expected_wumpus_room example))
