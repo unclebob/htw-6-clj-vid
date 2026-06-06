@@ -648,6 +648,38 @@ branch name: swarmforge-QA
 
 Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
 
+## 2026-06-06 11:56:39 CDT
+
+Processing queued handoff from coder.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: random-events-hit-order
+branch name: swarmforge-coder
+10-character commit hash: 84738f5ae6
+```
+
+Reason: QA handoff merge is complete; processing queued messages in sorted order.
+
+## 2026-06-06 11:56:39 CDT
+
+Received handoff from coder.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: random-events-hit-order
+branch name: swarmforge-coder
+10-character commit hash: 84738f5ae6
+```
+
+Action: Re-read cleaner role and constitution; preparing to merge the named coder state into `swarmforge-cleaner` and apply cleaner role rules.
+
 ## 2026-06-06 11:54:54 CDT
 
 Received QA handoff.
