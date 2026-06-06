@@ -5,6 +5,9 @@
 
 (def instructions-prompt shell/instructions-prompt)
 
+(defn exit! [status]
+  (inspection/exit! status))
+
 (defn random-seed []
   (shell/random-seed))
 
@@ -18,7 +21,8 @@
   (options/parse-args args))
 
 (defn inspect-main [& args]
-  (apply inspection/inspect-main args))
+  (binding [inspection/*exit!* exit!]
+    (apply inspection/inspect-main args)))
 
 (defn inspect [& args]
   (apply inspection/inspect args))

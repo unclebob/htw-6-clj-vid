@@ -4,6 +4,11 @@
             [htw.cli-options :as options]
             [htw.game :as game]))
 
+(defn exit! [status]
+  (System/exit status))
+
+(def ^:dynamic *exit!* exit!)
+
 (defn- room-line [room]
   (str room ": " (str/join ", " (cave/exits room))))
 
@@ -103,7 +108,7 @@
     (catch Exception e
       (binding [*out* *err*]
         (println (.getMessage e)))
-      (System/exit 1))))
+      (*exit!* 1))))
 
 (defn inspect [& args]
   (apply inspect-main args))
