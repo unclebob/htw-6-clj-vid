@@ -93,9 +93,10 @@
                             "--pits" "14,15"
                             "--bats" "16,17"
                             "--commands" "m 2")]
-    (is (some #{"COMMAND: m 2"} lines))
-    (is (some #{"PLAYER: 2"} lines))
-    (is (some #{"STATUS: IN-PROGRESS"} lines))))
+    (assert-lines-contain lines
+                          ["COMMAND: m 2"
+                           "PLAYER: 2"
+                           "STATUS: IN-PROGRESS"])))
 
 (deftest scripted-shoot-command-prints-arrow-diagnostics
   (let [lines (output-lines "--player" "1"
