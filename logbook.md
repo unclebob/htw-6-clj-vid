@@ -450,6 +450,8 @@ branch name: swarmforge-QA
 
 Summary: QA completed final verification for htw-shell-launch and committed shell game loop fixes plus UI E2E coverage.
 
+## 2026-06-05 15:15:52 CDT - Sent QA Complete Handoff
+
 ## 2026-06-05 15:41:56 CDT - Received QA handoff
 
 Complete handoff message received:
@@ -832,3 +834,61 @@ branch name: swarmforge-architect
 ```
 
 Reason for note: message arrived while htw-shell-launch hardening verification and handoff were in progress; merging the named architect state into the hardender branch and applying hardender role rules to the merged state.
+
+## 2026-06-06 11:57:56 CDT
+
+Sent handoff to QA.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-hardender
+10-character commit hash: 30db8016f7
+```
+
+Summary: Hardender merged the architect CLI split, refreshed mutation manifests for the split modules, and completed required verification.
+
+## 2026-06-06 11:59:31 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: c87dd9adeb
+```
+
+Reason for note: message arrived while architect-merged htw-shell-launch hardening verification and handoff were in progress; merged the named QA state into the hardender branch and applied no hardender-specific work to this QA handoff.
+
+## 2026-06-06 12:04:54 CDT
+
+Received QA handoff:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: b802fffff6
+```
+
+Action taken: re-read hardender role and constitution; merged the named QA state into the hardender branch and applied no hardender-specific work to this QA handoff.
+
+## 2026-06-06 12:11:06 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: random-events-hit-order
+branch name: swarmforge-architect
+10-character commit hash: f175ed00ac
+```
+
+Action taken: re-read hardender role and constitution; merged the named architect state into the hardender branch and preparing to apply hardender mutation rules.

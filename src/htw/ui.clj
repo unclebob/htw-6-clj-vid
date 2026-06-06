@@ -45,9 +45,15 @@
     :else
     (:output (display-turn state))))
 
+(defn- observation-output [state]
+  (cond-> [(str "PLAYER: " (:player-room state))
+           (str "WUMPUS: " (:wumpus-room state))]
+    (:arrow-visits state)
+    (conj (str "ARROW PATH: " (str/join ", " (:arrow-visits state))))))
+
 (defn- result [state extra-output]
   {:state state
-   :output (vec (concat extra-output (terminal-output state)))})
+   :output (vec (concat extra-output (observation-output state) (terminal-output state)))})
 
 (defn- invalid-result [state message]
   {:state state
@@ -97,5 +103,5 @@
     (update (display-turn state) :output #(vec (concat base-output %)))))
 
 ;; clj-mutate-manifest-begin
-;; {:version 1, :tested-at "2026-06-06T11:56:19.941295-05:00", :module-hash "274103724", :forms [{:id "form/0/ns", :kind "ns", :line 1, :end-line 4, :hash "-861550946"} {:id "def/win-taunt", :kind "def", :line 6, :end-line 6, :hash "-1671476535"} {:id "def/loss-taunt", :kind "def", :line 7, :end-line 7, :hash "-659904103"} {:id "def/replay-prompt", :kind "def", :line 8, :end-line 8, :hash "918211849"} {:id "def/turn-prompt", :kind "def", :line 9, :end-line 9, :hash "-1696928107"} {:id "def/instructions-lines", :kind "def", :line 11, :end-line 18, :hash "-1516326404"} {:id "defn-/parse-int", :kind "defn-", :line 20, :end-line 21, :hash "32822557"} {:id "defn-/tokens", :kind "defn-", :line 23, :end-line 24, :hash "-781448191"} {:id "defn/display-turn", :kind "defn", :line 26, :end-line 35, :hash "-63384933"} {:id "defn-/terminal-output", :kind "defn-", :line 37, :end-line 46, :hash "1791637227"} {:id "defn-/result", :kind "defn-", :line 48, :end-line 50, :hash "-1657188630"} {:id "defn-/invalid-result", :kind "defn-", :line 52, :end-line 54, :hash "347306135"} {:id "defn-/move-command", :kind "defn-", :line 56, :end-line 62, :hash "-1844884371"} {:id "defn-/shoot-command", :kind "defn-", :line 64, :end-line 69, :hash "2064210255"} {:id "defn-/remember-setup", :kind "defn-", :line 71, :end-line 74, :hash "-400379457"} {:id "defn/enter-command", :kind "defn", :line 76, :end-line 83, :hash "-706680405"} {:id "defn/replay", :kind "defn", :line 85, :end-line 91, :hash "1196211499"} {:id "defn/answer-instructions", :kind "defn", :line 93, :end-line 97, :hash "108555046"}]}
+;; {:version 1, :tested-at "2026-06-06T12:22:22.654958-05:00", :module-hash "-28101062", :forms [{:id "form/0/ns", :kind "ns", :line 1, :end-line 4, :hash "-861550946"} {:id "def/win-taunt", :kind "def", :line 6, :end-line 6, :hash "-1671476535"} {:id "def/loss-taunt", :kind "def", :line 7, :end-line 7, :hash "-659904103"} {:id "def/replay-prompt", :kind "def", :line 8, :end-line 8, :hash "918211849"} {:id "def/turn-prompt", :kind "def", :line 9, :end-line 9, :hash "-1696928107"} {:id "def/instructions-lines", :kind "def", :line 11, :end-line 18, :hash "-1516326404"} {:id "defn-/parse-int", :kind "defn-", :line 20, :end-line 21, :hash "32822557"} {:id "defn-/tokens", :kind "defn-", :line 23, :end-line 24, :hash "-781448191"} {:id "defn/display-turn", :kind "defn", :line 26, :end-line 35, :hash "-63384933"} {:id "defn-/terminal-output", :kind "defn-", :line 37, :end-line 46, :hash "1791637227"} {:id "defn-/observation-output", :kind "defn-", :line 48, :end-line 52, :hash "428437103"} {:id "defn-/result", :kind "defn-", :line 54, :end-line 56, :hash "-641323567"} {:id "defn-/invalid-result", :kind "defn-", :line 58, :end-line 60, :hash "347306135"} {:id "defn-/move-command", :kind "defn-", :line 62, :end-line 68, :hash "-1844884371"} {:id "defn-/shoot-command", :kind "defn-", :line 70, :end-line 75, :hash "2064210255"} {:id "defn-/remember-setup", :kind "defn-", :line 77, :end-line 80, :hash "-400379457"} {:id "defn/enter-command", :kind "defn", :line 82, :end-line 89, :hash "-706680405"} {:id "defn/replay", :kind "defn", :line 91, :end-line 97, :hash "1196211499"} {:id "defn/answer-instructions", :kind "defn", :line 99, :end-line 103, :hash "108555046"}]}
 ;; clj-mutate-manifest-end

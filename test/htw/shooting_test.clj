@@ -11,10 +11,14 @@
 
 (deftest arrow-hits-wumpus-and-player
   (let [hit (game/shoot-arrow (configured-game 1 11 {}) [2 10 11])
+        wumpus-first (game/shoot-arrow (configured-game 1 2 {}) [2 1])
         self-hit (game/shoot-arrow (configured-game 1 13 {}) [2 1])]
     (is (= [2 10 11] (:arrow-visits hit)))
     (is (= :won (:status hit)))
     (is (= [game/wumpus-hit-message] (:messages hit)))
+    (is (= [2] (:arrow-visits wumpus-first)))
+    (is (= :won (:status wumpus-first)))
+    (is (= [game/wumpus-hit-message] (:messages wumpus-first)))
     (is (= [2 1] (:arrow-visits self-hit)))
     (is (= :lost (:status self-hit)))
     (is (= [game/self-hit-message] (:messages self-hit)))))
@@ -30,6 +34,12 @@
 (deftest invalid-arrow-segment-falls-back-to-a-legal-exit
   (is (= [2] (arrow/visits (configured-game 1 13 {}) [3])))
   (is (= [2 3] (arrow/visits (configured-game 1 13 {}) [2 4]))))
+
+(deftest seeded-invalid-arrow-fallback-varies-across-seeds
+  (let [fallback-rooms (set (map #(first (arrow/visits (configured-game 1 13 {:seed %}) [20]))
+                                 [201 202 203 204 205 206 207 208]))]
+    (is (every? #{2 5 8} fallback-rooms))
+    (is (< 1 (count fallback-rooms)))))
 
 (deftest missed-arrow-wakes-wumpus-and-can-lose-on-exhaustion
   (let [miss (game/shoot-arrow
