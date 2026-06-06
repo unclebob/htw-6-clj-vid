@@ -11,14 +11,33 @@
                        "System/exit"
                        "htw.acceptance"
                        "htw.ui"
-                       "htw.cli"]
+                       "htw.cli"
+                       "htw.shell"
+                       "htw.inspection"
+                       "htw.cli-options"]
    "src/htw/arrow.clj" ["htw.game"
                         "htw.ui"
                         "htw.cli"
+                        "htw.shell"
+                        "htw.inspection"
+                        "htw.cli-options"
                         "htw.acceptance"]
    "src/htw/ui.clj" ["htw.cli"
+                     "htw.shell"
+                     "htw.inspection"
+                     "htw.cli-options"
                      "read-line"
-                     "println"]})
+                     "println"]
+   "src/htw/cli.clj" ["htw.game"
+                      "htw.ui"
+                      "htw.cave"
+                      "read-line"
+                      "println"]
+   "src/htw/cli_options.clj" ["read-line"
+                              "println"
+                              "htw.ui"
+                              "htw.shell"
+                              "htw.inspection"]})
 
 (defn- file-contains? [path token]
   (str/includes? (slurp path) token))
