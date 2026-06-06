@@ -498,6 +498,20 @@ branch name: swarmforge-QA
 
 Action taken: re-read architect role and constitution; merging the named QA state into the architect branch and applying no architect-specific work to this QA handoff.
 
+## 2026-06-06 12:01:39 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: random-events-hit-order
+branch name: swarmforge-cleaner
+10-character commit hash: 2ec51f3366
+```
+
+Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+
 ## 2026-06-06 11:34:25 CDT
 
 Received handoff:
