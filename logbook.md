@@ -376,6 +376,22 @@ branch name: swarmforge-QA
 
 Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
 
+## 2026-06-06 11:33:14 CDT
+
+Sent handoff to architect.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-cleaner
+10-character commit hash: pending commit
+```
+
+Summary: Cleaner reduced local CLI complexity and duplicate shell-main test setup, then forwarded the branch for architectural review.
+
 ## 2026-06-05 15:40:31 CDT
 
 Received QA handoff.

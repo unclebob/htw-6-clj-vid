@@ -132,23 +132,27 @@
       (with-in-str input
         (apply cli/-main args)))))
 
+(defn- shell-lines-with-hazards [input player-room wumpus-room & args]
+  (apply shell-lines input
+         "--player" (str player-room)
+         "--wumpus" (str wumpus-room)
+         "--pits" "14,15"
+         "--bats" "16,17"
+         args))
+
 (deftest shell-main-can-skip-instructions-and-win
-  (let [lines (shell-lines "n\ns 2\n"
-                           "--player" "1"
-                           "--wumpus" "2"
-                           "--pits" "14,15"
-                           "--bats" "16,17")]
+  (let [lines (shell-lines-with-hazards "n\ns 2\n" 1 2)]
     (is (some #{"INSTRUCTIONS (Y-N)?"} lines))
     (is (some #{"YOU ARE IN ROOM 1"} lines))
     (is (some #{"AHA! YOU GOT THE WUMPUS!"} lines))
     (is (some #{"HEE HEE HEE - THE WUMPUS'LL GETCHA NEXT TIME!!"} lines))))
 
 (deftest shell-main-can-show-instructions-lose-and-replay
-  (let [lines (shell-lines "y\nm 2\ny\n"
-                           "--player" "1"
-                           "--wumpus" "13"
-                           "--pits" "2,15"
-                           "--bats" "16,17")]
+  (let [lines (shell-lines-with-hazards "y\nm 2\ny\n"
+                                        1
+                                        13
+                                        "--pits"
+                                        "2,15")]
     (is (some #{"WELCOME TO 'HUNT THE WUMPUS'"} lines))
     (is (some #{"YYYIIIIEEEE . . . FELL IN PIT"} lines))
     (is (some #{"HA HA HA - YOU LOSE!"} lines))
