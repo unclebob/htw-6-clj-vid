@@ -2,6 +2,20 @@
 
 Handoff notes are recorded here by agents as handoffs are received and sent.
 
+## 2026-06-06 11:59:12 CDT - Received Handoff
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-hardender
+10-character commit hash: 30db8016f7
+```
+
+Action taken: re-read QA role and constitution; prepared to merge the named hardender state into `swarmforge-QA` and apply QA role rules.
+
 ## 2026-06-06 11:50:09 CDT - Sent QA Complete Handoffs
 
 Complete handoff message sent to specifier, coder, cleaner, architect, and hardender:
