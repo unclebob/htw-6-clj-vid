@@ -67,3 +67,7 @@
 
 (defn configured-state [options]
   (merge (setup-from options) (select-keys options state-options)))
+
+;; clj-mutate-manifest-begin
+;; {:version 1, :tested-at "2026-06-06T11:54:15.557989-05:00", :module-hash "-1732907862", :forms [{:id "form/0/ns", :kind "ns", :line 1, :end-line 3, :hash "2013944622"} {:id "defn/parse-int", :kind "defn", :line 5, :end-line 9, :hash "-489437070"} {:id "defn-/parse-room-list", :kind "defn-", :line 11, :end-line 15, :hash "-97128823"} {:id "defn-/parse-wake-choice", :kind "defn-", :line 17, :end-line 20, :hash "-1858852301"} {:id "def/option-parsers", :kind "def", :line 22, :end-line 35, :hash "-1081062010"} {:id "defn-/parse-option", :kind "defn-", :line 37, :end-line 41, :hash "-2129025786"} {:id "defn/parse-args", :kind "defn", :line 43, :end-line 46, :hash "-2093151120"} {:id "defn/explicit-setup?", :kind "defn", :line 48, :end-line 49, :hash "-12698034"} {:id "defn-/setup-from", :kind "defn-", :line 51, :end-line 63, :hash "111081715"} {:id "def/state-options", :kind "def", :line 65, :end-line 66, :hash "-369228174"} {:id "defn/configured-state", :kind "defn", :line 68, :end-line 69, :hash "1589847890"}]}
+;; clj-mutate-manifest-end
