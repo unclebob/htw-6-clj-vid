@@ -2,6 +2,20 @@
 
 Handoff notes are recorded here by agents as handoffs are received and sent.
 
+## 2026-06-06 11:50:09 CDT - Sent QA Complete Handoffs
+
+Complete handoff message sent to specifier, coder, cleaner, architect, and hardender:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: pending commit
+```
+
+Summary: QA completed final verification for merged hardender state `eb2b384b4a`; all required unit, property, acceptance, UI E2E, CRAP, and DRY checks passed.
+
 ## 2026-06-06 11:46:06 CDT - Received Handoff
 
 Message:
