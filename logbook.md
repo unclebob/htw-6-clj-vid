@@ -605,6 +605,22 @@ branch name: swarmforge-coder
 
 Action: Re-read cleaner role and constitution; preparing to merge the named coder state into `swarmforge-cleaner` and apply cleaner role rules.
 
+## 2026-06-06 12:00:29 CDT
+
+Sent handoff to architect.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: random-events-hit-order
+branch name: swarmforge-cleaner
+10-character commit hash: pending commit
+```
+
+Summary: Cleaner merged and verified the random event hit-order work, resolved local conflicts, refreshed mutation manifests, and forwarded the branch for architectural review.
+
 ## 2026-06-06 11:54:54 CDT
 
 Received QA handoff.
