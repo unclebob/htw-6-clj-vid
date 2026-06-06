@@ -77,8 +77,7 @@ Summary: Task 1 setup behavior specifications and end-to-end QA suite are ready 
 ## 2026-06-05 14:00:26 CDT - Received Handoff
 
 Message:
-
-```text
+```
 Re-read your role and constitution.
 sender role: specifier
 specifier handoff name: task1-setup
@@ -87,6 +86,19 @@ branch name: master
 ```
 
 Action taken: Re-read coder role and constitution, then prepared to merge the specified master state into the coder branch before implementing the accepted behavior slice.
+
+## 2026-06-05 14:08:56 CDT - Sent Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: task1-setup
+branch name: swarmforge-coder
+10-character commit hash: 76941f9d2f
+```
+
+Summary: Task 1 cave topology, seeded placement, reproducible setup, unit tests, and normal acceptance pipeline are ready for cleaner review.
 
 ## 2026-06-05 14:03:14 CDT - sent handoff to coder
 
@@ -102,6 +114,32 @@ branch name: master
 
 Summary: Task 2 movement, warning, hazard, and Wumpus wake specifications and end-to-end QA suite are ready for coder review.
 
+## 2026-06-05 14:10:33 CDT - Processing Queued Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: specifier
+specifier handoff name: task2-movement
+branch name: master
+10-character commit hash: 09200f8067
+```
+
+Reason: Processing the next queued specifier handoff after completing and sending the Task 1 cleaner handoff.
+
+## 2026-06-05 14:16:45 CDT - Sent Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: task2-movement
+branch name: swarmforge-coder
+10-character commit hash: d59ca53a24
+```
+
+Summary: Task 2 movement, warnings, hazard resolution, Wumpus wake behavior, unit tests, and acceptance handlers are ready for cleaner review.
+
 ## 2026-06-05 14:05:57 CDT - sent handoff to coder
 
 Complete handoff message:
@@ -116,19 +154,31 @@ branch name: master
 
 Summary: Task 3 crooked-arrow shooting specifications and end-to-end QA suite are ready for coder review.
 
-## 2026-06-05 14:08:56 CDT - Sent Handoff
+## 2026-06-05 14:17:32 CDT - Processing Queued Handoff
 
 Message:
-
-```text
+```
 Re-read your role and constitution.
-sender role: coder
-specifier handoff name: task1-setup
-branch name: swarmforge-coder
-10-character commit hash: 76941f9d2f
+sender role: specifier
+specifier handoff name: task3-shooting
+branch name: master
+10-character commit hash: 7b4df4d6de
 ```
 
-Summary: Task 1 cave topology, seeded placement, reproducible setup, unit tests, and normal acceptance pipeline are ready for cleaner review.
+Reason: Processing the next queued specifier handoff after completing and sending the Task 2 cleaner handoff.
+
+## 2026-06-05 14:21:31 CDT - Sent Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: task3-shooting
+branch name: swarmforge-coder
+10-character commit hash: 0a0fdf3729
+```
+
+Summary: Task 3 crooked-arrow shooting, random deviation, self-hit, Wumpus wake on miss, arrow exhaustion, unit tests, and acceptance handlers are ready for cleaner review.
 
 ## 2026-06-05 14:09:17 CDT - sent handoff to coder
 
@@ -144,99 +194,12 @@ branch name: master
 
 Summary: Task 4 interactive game loop specifications and end-to-end QA suite are ready for coder review.
 
-## 2026-06-05 14:10:07 CDT
-
-Received handoff from coder.
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: coder
-specifier handoff name: task1-setup
-branch name: swarmforge-coder
-10-character commit hash: 76941f9d2f
-```
-
-Action: Merging the coder branch state identified by the handoff into `swarmforge-cleaner`, then applying cleaner role rules.
-
-## 2026-06-05 14:10:33 CDT - Processing Queued Handoff
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: specifier
-specifier handoff name: task2-movement
-branch name: master
-10-character commit hash: 09200f8067
-```
-
-Reason: Processing the next queued specifier handoff after completing and sending the Task 1 cleaner handoff.
-
-## 2026-06-05 14:16:45 CDT - Sent Handoff
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: coder
-specifier handoff name: task2-movement
-branch name: swarmforge-coder
-10-character commit hash: d59ca53a24
-```
-
-Summary: Task 2 movement, warnings, hazard resolution, Wumpus wake behavior, unit tests, and acceptance handlers are ready for cleaner review.
-
-## 2026-06-05 14:17:32 CDT - Processing Queued Handoff
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: specifier
-specifier handoff name: task3-shooting
-branch name: master
-10-character commit hash: 7b4df4d6de
-```
-
-Reason: Processing the next queued specifier handoff after completing and sending the Task 2 cleaner handoff.
-
-## 2026-06-05 14:21:14 CDT
-
-Sent handoff to architect.
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task1-setup
-branch name: swarmforge-cleaner
-10-character commit hash: pending commit
-```
-
-Summary: Cleaner completed structure-preserving cleanup for task1 setup and forwarded the branch for architectural review.
-
-## 2026-06-05 14:21:31 CDT - Sent Handoff
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: coder
-specifier handoff name: task3-shooting
-branch name: swarmforge-coder
-10-character commit hash: 0a0fdf3729
-```
-
-Summary: Task 3 crooked-arrow shooting, random deviation, self-hit, Wumpus wake on miss, arrow exhaustion, unit tests, and acceptance handlers are ready for cleaner review.
-
 ## 2026-06-05 14:22:21 CDT - Processing Queued Handoff
 
 Message:
+```
 
-```text
+Reason: Current task1 cleanup and required architect handoff are complete; processing queued messages in sorted order.
 Re-read your role and constitution.
 sender role: specifier
 specifier handoff name: task4-game-loop
@@ -246,27 +209,10 @@ branch name: master
 
 Reason: Processing the next queued specifier handoff after completing and sending the Task 3 cleaner handoff.
 
-## 2026-06-05 14:25:56 CDT
-
-Processing queued handoff from coder.
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: coder
-specifier handoff name: task2-movement
-branch name: swarmforge-coder
-10-character commit hash: d59ca53a24
-```
-
-Reason: Current task1 cleanup and required architect handoff are complete; processing queued messages in sorted order.
-
 ## 2026-06-05 14:29:39 CDT - Sent Handoff
 
 Message:
-
-```text
+```
 Re-read your role and constitution.
 sender role: coder
 specifier handoff name: task4-game-loop
@@ -276,27 +222,10 @@ branch name: swarmforge-coder
 
 Summary: Task 4 terminal command loop, turn display, visible win/loss output, replay behavior, unit tests, and UI acceptance scenarios are ready for cleaner review.
 
-## 2026-06-05 14:29:44 CDT
-
-Sent handoff to architect.
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task2-movement
-branch name: swarmforge-cleaner
-10-character commit hash: pending commit
-```
-
-Summary: Cleaner completed structure-preserving cleanup for task2 movement and forwarded the branch for architectural review.
-
 ## 2026-06-05 14:30:23 CDT - Processing Queued Handoff
 
 Message:
-
-```text
+```
 Re-read your role and constitution.
 sender role: specifier
 specifier handoff name: htw-shell-launch
@@ -306,71 +235,49 @@ branch name: master
 
 Reason: Processing the next queued specifier handoff after completing and sending the Task 4 cleaner handoff.
 
-## 2026-06-05 14:30:59 CDT
-
-Processing queued handoff from coder.
+## 2026-06-05 14:34:41 CDT - Sent Handoff
 
 Message:
-
-```text
+```
 Re-read your role and constitution.
 sender role: coder
-specifier handoff name: task3-shooting
+specifier handoff name: htw-shell-launch
 branch name: swarmforge-coder
-10-character commit hash: 0a0fdf3729
+10-character commit hash: d06b11c65e
 ```
 
-Reason: Task2 cleanup and required architect handoff are complete; processing queued messages in sorted order.
+Summary: The `htw` shell command, random launch seed behavior, instructions prompt startup, first-turn continuation, unit tests, acceptance handlers, and smoke-tested executable wrapper are ready for cleaner review.
 
-## 2026-06-05 14:32:12 CDT
-
-Sent handoff to hardender.
+## 2026-06-05 15:01:34 CDT - Received QA Handoff
 
 Message:
-
-```text
+```
 Re-read your role and constitution.
-sender role: architect
+sender role: QA
 specifier handoff name: task1-setup
-branch name: swarmforge-architect
-10-character commit hash: 4d8791bd48
+branch name: swarmforge-QA
+10-character commit hash: 3f3ce9bd27
 ```
 
-Summary: Architect isolated seeded placement ordering behind a dedicated namespace and added lightweight architecture plus separate property checks for task1 setup.
+Action taken: Re-read coder role and constitution, recorded the QA handoff, and prepared to merge the specified QA state without applying coder-specific work.
 
-## 2026-06-05 14:33:11 CDT
+## 2026-06-06 11:39:50 CDT - QA Merge Resolution
 
-Queued message processed:
-
-```text
+Message:
+```
 Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task2-movement
-branch name: swarmforge-cleaner
-10-character commit hash: c79511601b
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 019291aeea
 ```
 
-Reason for note: message arrived while task1-setup work was in progress; processing after completing and sending the required task1-setup handoff.
+Action taken: Merged the specified QA branch state into the coder branch and preserved the coder logbook chronology while resolving overlapping role-history entries from the QA branch.
 
-## 2026-06-05 14:33:11 CDT
+## 2026-06-05 15:40:14 CDT - QA Merge Resolution
 
-Received handoff:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task2-movement
-branch name: swarmforge-cleaner
-10-character commit hash: c79511601b
+Message:
 ```
-
-Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
-
-## 2026-06-05 15:39:06 CDT - Sent QA Complete Handoff
-
-Message sent to specifier, coder, cleaner, architect, and hardender:
-
-```text
 Re-read your role and constitution.
 sender role: QA
 specifier handoff name: htw-shell-launch
@@ -378,12 +285,15 @@ branch name: swarmforge-QA
 10-character commit hash: 27d865d235
 ```
 
-Summary: QA completed final verification for htw-shell-launch and committed shell game loop fixes plus UI E2E coverage.
+Action taken: Merged the specified QA branch state into the coder branch and preserved the coder logbook chronology while resolving overlapping role-history entries from the QA branch.
 
 ## 2026-06-05 15:41:56 CDT - Received QA handoff
 
 Complete handoff message received:
 
+## 2026-06-05 15:17:14 CDT - QA Merge Resolution
+
+Message:
 ```
 Re-read your role and constitution.
 sender role: QA
@@ -473,7 +383,11 @@ Reason for note: message arrived while task4/shell-launch hardening was in progr
 ## 2026-06-05 15:07:33 CDT - Sent handoff to QA
 
 Complete handoff message sent:
+Action taken: Merged the specified QA branch state into the coder branch and preserved the coder logbook chronology while resolving overlapping role-history entries from the QA branch.
 
+## 2026-06-05 15:40:14 CDT - Received QA Handoff
+
+Message:
 ```
 Re-read your role and constitution.
 sender role: hardender
@@ -488,6 +402,17 @@ Summary: Combined task2/task3 hardening completed and committed for QA review.
 
 Complete queued handoff message:
 
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 27d865d235
+```
+
+Action taken: Re-read coder role and constitution, recorded the QA handoff, and prepared to merge the specified QA state without applying coder-specific work.
+
+## 2026-06-05 15:01:34 CDT - QA Merge Resolution
+
+Message:
 ```
 Re-read your role and constitution.
 sender role: QA
@@ -744,9 +669,112 @@ branch name: swarmforge-QA
 
 Action taken: re-read architect role and constitution; merging the named QA state into the architect branch and applying no architect-specific work to this QA handoff.
 
-## 2026-06-06 11:33:14 CDT
+## 2026-06-06 11:56:39 CDT
+
+Processing queued handoff from coder.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: random-events-hit-order
+branch name: swarmforge-coder
+10-character commit hash: 84738f5ae6
+```
+
+Reason: QA handoff merge is complete; processing queued messages in sorted order.
+
+## 2026-06-06 11:56:39 CDT
+
+Received handoff from coder.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: coder
+specifier handoff name: random-events-hit-order
+branch name: swarmforge-coder
+10-character commit hash: 84738f5ae6
+```
+
+Action: Re-read cleaner role and constitution; preparing to merge the named coder state into `swarmforge-cleaner` and apply cleaner role rules.
+
+## 2026-06-06 12:00:29 CDT
 
 Sent handoff to architect.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: random-events-hit-order
+branch name: swarmforge-cleaner
+10-character commit hash: pending commit
+```
+
+Summary: Cleaner merged and verified the random event hit-order work, resolved local conflicts, refreshed mutation manifests, and forwarded the branch for architectural review.
+
+## 2026-06-06 11:54:54 CDT
+
+Received QA handoff.
+
+Message:
+
+```text
+Action taken: Merged the specified QA branch state into the coder branch and preserved the coder logbook chronology while resolving overlapping role-history entries from the QA branch.
+
+## 2026-06-05 15:17:14 CDT - Received QA Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task3-shooting
+branch name: swarmforge-QA
+10-character commit hash: 9e1c64a0b2
+```
+
+Action taken: Re-read coder role and constitution, recorded the QA handoff, and prepared to merge the specified QA state without applying coder-specific work.
+
+## 2026-06-06 11:39:50 CDT - Received QA Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: c87dd9adeb
+```
+
+Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
+
+## 2026-06-06 11:41:09 CDT
+
+Received QA handoff.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 019291aeea
+```
+
+Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
+
+## 2026-06-06 11:33:14 CDT
+10-character commit hash: 019291aeea
+```
+
+Action taken: Re-read coder role and constitution, recorded the QA handoff, and prepared to merge the specified QA state without applying coder-specific work.
+
+## 2026-06-06 11:43:18 CDT - Processing Queued Handoff
 
 Message:
 
@@ -791,3 +819,12 @@ branch name: swarmforge-QA
 ```
 
 Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
+```
+Re-read your role and constitution.
+sender role: specifier
+specifier handoff name: random-events-hit-order
+branch name: master
+10-character commit hash: 253ec9942f
+```
+
+Reason: Message arrived while the htw-shell-launch QA handoff merge was in progress; processing after completing and committing the QA merge.
