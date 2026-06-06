@@ -352,6 +352,22 @@ branch name: swarmforge-cleaner
 
 Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
 
+## 2026-06-06 11:39:29 CDT
+
+Sent handoff to coder.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: specifier
+specifier handoff name: random-events-hit-order
+branch name: master
+10-character commit hash: 253ec9942f
+```
+
+Summary: Specifier added acceptance specifications and end-to-end QA suites for shell random event choices and arrow hit order.
+
 ## 2026-06-05 15:01:59 CDT - received handoff from QA
 
 Complete handoff message received:
