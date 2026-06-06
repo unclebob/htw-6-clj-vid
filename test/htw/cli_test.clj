@@ -1,14 +1,18 @@
 (ns htw.cli-test
   (:require [clojure.string :as str]
             [clojure.test :refer [deftest is]]
-            [htw.cli :as cli]))
+            [htw.cli :as cli]
+            [htw.inspection :as inspection]))
 
-(defn- output-lines [& args]
+(defn- inspection-output-lines [& args]
   (str/split-lines (with-out-str (apply cli/inspect-main args))))
 
 (defn- assert-lines-contain [lines expected]
   (doseq [line expected]
     (is (some #{line} lines))))
+
+(defn- output-lines [& args]
+  (apply inspection-output-lines args))
 
 (deftest launch-starts-with-instructions-prompt-and-random-seed
   (let [first-launch (cli/launch-game)
@@ -23,7 +27,7 @@
     (is (some #{"SHOOT OR MOVE (S-M)?"} (:output continued)))))
 
 (deftest inspect-prints-canonical-topology-and-seeded-setup
-  (let [lines (output-lines "--seed" "1973")]
+  (let [lines (inspection-output-lines "--seed" "1973")]
     (is (some #{"CAVE EXITS"} lines))
     (is (some #{"1: 2, 5, 8"} lines))
     (is (some #{"20: 13, 16, 19"} lines))
@@ -34,7 +38,7 @@
     (is (some #{"BATS: 1, 7"} lines))))
 
 (deftest inspect-prints-reused-setup
-  (let [lines (output-lines "--seed" "1973" "--same-setup" "true")
+  (let [lines (inspection-output-lines "--seed" "1973" "--same-setup" "true")
         setup (subvec (vec lines) 22 26)
         reused (subvec (vec lines) 27 31)]
     (is (= "REUSED SETUP" (nth lines 26)))
@@ -56,7 +60,7 @@
                                  "BATS: 1"])))
 
 (deftest inspect-defaults-to-a-deterministic-seed
-  (let [lines (output-lines)]
+  (let [lines (inspection-output-lines)]
     (is (some #{"SETUP"} lines))
     (is (some #{"PLAYER: 16"} lines))))
 
@@ -79,9 +83,9 @@
         err (java.io.StringWriter.)]
     (binding [*err* err]
       (try
-        (with-redefs [cli/exit! (fn [status]
-                                  (reset! exit-status status)
-                                  (throw (ex-info "exit" {})))]
+        (with-redefs [inspection/exit! (fn [status]
+                                         (reset! exit-status status)
+                                         (throw (ex-info "exit" {})))]
           (cli/inspect-main "--seed" "nope"))
         (catch clojure.lang.ExceptionInfo _)))
     (is (= "Invalid seed: nope\n" (str err)))
