@@ -63,7 +63,7 @@
     (game/start-game 1973)))
 
 (def state-options
-  [:arrows :bat-transport-room :wumpus-wake-choice :arrow-deviation-room])
+  [:seed :arrows :bat-transport-room :wumpus-wake-choice :arrow-deviation-room])
 
 (defn configured-state [options]
   (merge (setup-from options) (select-keys options state-options)))
