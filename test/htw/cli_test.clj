@@ -66,16 +66,16 @@
 (deftest parser-rejects-invalid-input
   (is (thrown-with-msg? clojure.lang.ExceptionInfo
                         #"Invalid seed: nope"
-                        (#'cli/parse-args ["--seed" "nope"])))
+                        (cli/parse-args ["--seed" "nope"])))
   (is (thrown-with-msg? clojure.lang.ExceptionInfo
                         #"Unknown option: --bogus"
-                        (#'cli/parse-args ["--bogus" "1"])))
+                        (cli/parse-args ["--bogus" "1"])))
   (is (thrown-with-msg? clojure.lang.ExceptionInfo
                         #"Options must be supplied"
-                        (#'cli/parse-args ["--seed"])))
+                        (cli/parse-args ["--seed"])))
   (is (thrown-with-msg? clojure.lang.ExceptionInfo
                         #"pits must contain exactly two rooms"
-                        (#'cli/parse-args ["--pits" "1,2,3"]))))
+                        (cli/parse-args ["--pits" "1,2,3"]))))
 
 (deftest inspect-main-reports-errors-and-exits-nonzero
   (let [exit-status (atom nil)

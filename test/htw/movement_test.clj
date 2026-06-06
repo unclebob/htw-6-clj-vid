@@ -35,6 +35,30 @@
     (is (= [game/bat-message game/pit-message]
            (:messages bat-pit)))))
 
+(deftest bat-transport-does-not-drop-player-into-bats
+  (let [bat-rooms (set (remove #{2} (range 1 21)))
+        default-transport (game/move-player
+                            (configured-game 2 13 [] bat-rooms)
+                            1)
+        configured-bat-transport (game/move-player
+                                   (configured-game 2 13 [] bat-rooms
+                                                    {:bat-transport-room 17})
+                                   1)]
+    (is (= 2 (:player-room default-transport)))
+    (is (= :in-progress (:status default-transport)))
+    (is (= [game/bat-message] (:messages default-transport)))
+    (is (= 2 (:player-room configured-bat-transport)))
+    (is (= :in-progress (:status configured-bat-transport)))
+    (is (= [game/bat-message] (:messages configured-bat-transport)))))
+
+(deftest seeded-bat-transport-varies-across-seeds
+  (let [transported-rooms (set (map #(-> (configured-game 1 13 [14 15] [2 17] {:seed %})
+                                         (game/move-player 2)
+                                         :player-room)
+                                    [51 52 53 54 55 56 57 58]))]
+    (is (every? (set (remove #{2 17} (range 1 21))) transported-rooms))
+    (is (< 1 (count transported-rooms)))))
+
 (deftest warnings-are-adjacent-stable-and-deduplicated
   (are [state warnings] (= warnings (game/turn-warnings state))
     (configured-game 1 2 [3 4] [6 7]) ["I SMELL A WUMPUS"]
@@ -60,3 +84,12 @@
     (is (= 3 (:wumpus-room escaped)))
     (is (= :in-progress (:status immune)))
     (is (= 2 (:wumpus-room immune)))))
+
+(deftest seeded-wumpus-wake-varies-across-seeds
+  (let [wake-rooms (set (map #(-> (configured-game 1 2 [14 15] [16 17] {:seed %})
+                                  (game/wake-wumpus)
+                                  :wumpus-room)
+                             [101 102 103 104 105 106 107 108]))]
+    (is (every? (set (game/wumpus-wake-options (configured-game 1 2 [] [])))
+                wake-rooms))
+    (is (< 1 (count wake-rooms)))))
