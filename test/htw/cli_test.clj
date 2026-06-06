@@ -7,12 +7,12 @@
 (defn- inspection-output-lines [& args]
   (str/split-lines (with-out-str (apply cli/inspect-main args))))
 
+(defn- output-lines [& args]
+  (apply inspection-output-lines args))
+
 (defn- assert-lines-contain [lines expected]
   (doseq [line expected]
     (is (some #{line} lines))))
-
-(defn- output-lines [& args]
-  (apply inspection-output-lines args))
 
 (deftest launch-starts-with-instructions-prompt-and-random-seed
   (let [first-launch (cli/launch-game)

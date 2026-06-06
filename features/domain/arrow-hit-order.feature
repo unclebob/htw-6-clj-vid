@@ -1,3 +1,8 @@
+# mutation-stamp: sha256=9d8cc4e8201283a6100085db0ee8d0f1f04656f032ca3617e9e345e50c510a23
+# acceptance-mutation-manifest-begin
+# {"version":1,"tested_at":"2026-06-06T17:22:35Z","feature_name":"Arrow hit order","feature_path":"features/domain/arrow-hit-order.feature","background_hash":"13d117037c0f5f98733b41ac1c2391a100cd6a00f807de23835bb9e0ec63dd85","implementation_hash":"unknown","scenarios":[{"index":0,"name":"Arrow hit order 001: Wumpus hit stops arrow before later player hit","scenario_hash":"8443149b3a17371ddfa0491e2f881d0d4040c8d4335f8049b80288823341524b","mutation_count":28,"result":{"Total":28,"Killed":28,"Survived":0,"Errors":0},"tested_at":"2026-06-06T17:16:00Z"}]}
+# acceptance-mutation-manifest-end
+
 Feature: Arrow hit order
 
   Background:

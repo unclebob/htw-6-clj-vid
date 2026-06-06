@@ -37,7 +37,17 @@
                               "println"
                               "htw.ui"
                               "htw.shell"
-                              "htw.inspection"]})
+                              "htw.inspection"]
+   "src/htw/random.clj" ["read-line"
+                         "println"
+                         "System/exit"
+                         "htw.ui"
+                         "htw.cli"
+                         "htw.shell"
+                         "htw.inspection"
+                         "htw.game"
+                         "htw.arrow"
+                         "htw.acceptance"]})
 
 (defn- file-contains? [path token]
   (str/includes? (slurp path) token))
