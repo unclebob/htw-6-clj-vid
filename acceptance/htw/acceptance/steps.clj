@@ -43,9 +43,6 @@
   (when-not (= expected actual)
     (fail! (str message " expected " (pr-str expected) " but was " (pr-str actual)))))
 
-(defn- active-game [world]
-  (or (:game @world) (:custom-game @world)))
-
 (defn- assert-message-heard [state message]
   (when-not (some #{message} (:messages state))
     (fail! (str "message not heard: " message))))
@@ -53,6 +50,9 @@
 (defn- assert-output-contains [world line label]
   (when-not (some #{line} (:output @world))
     (fail! (str "output missing " label ": " line))))
+
+(defn- active-game [world]
+  (or (:game @world) (:custom-game @world)))
 
 (defn- seed-from-start-step [expanded]
   (when-let [[_ seed] (re-matches #"a game is started with seed ([0-9]+)" expanded)]
@@ -349,6 +349,9 @@
     "the player has <starting_arrows> arrows"
     (swap! world assoc-in [:custom-game :arrows] (parse-int (:starting_arrows example)))
 
+    "the player has <arrows> arrows"
+    (swap! world assoc-in [:custom-game :arrows] (parse-int (:arrows example)))
+
     "the configured setup is player <expected_player_room>, Wumpus <expected_wumpus_room>, pits <expected_pit_rooms>, bats <expected_bat_rooms>, arrows <expected_starting_arrows>"
     (let [state (:custom-game @world)]
       (assert= (parse-int (:expected_player_room example)) (:player-room state) "configured player room")
@@ -370,9 +373,6 @@
       (assert= (parse-int (:setup_wumpus_room example)) (:wumpus-room state) "configured Wumpus room")
       (assert= (set (parse-int-list (:expected_pit_rooms example))) (:pit-rooms state) "configured pit rooms")
       (assert= (set (parse-int-list (:expected_bat_rooms example))) (:bat-rooms state) "configured bat rooms"))
-
-    "the player has <arrows> arrows"
-    (swap! world assoc-in [:custom-game :arrows] (parse-int (:arrows example)))
 
     "invalid arrow movement will choose room <deviation_room>"
     (swap! world assoc-in [:custom-game :arrow-deviation-room] (parse-int (:deviation_room example)))
