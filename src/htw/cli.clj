@@ -135,16 +135,25 @@
 (defn- command-tokens [command]
   (remove str/blank? (str/split (str/trim command) #"\s+")))
 
+(defn- invalid-command [state action]
+  (assoc state :error (str (str/upper-case (or action "")) " IS NOT A COMMAND")))
+
+(defn- scripted-move [state args]
+  (if (= 1 (count args))
+    (game/try-move-player state (parse-int (first args) "move room"))
+    (assoc state :error game/invalid-move-message)))
+
+(defn- scripted-shot [state args]
+  (if (<= 1 (count args) 5)
+    (game/try-shoot-arrow state (mapv #(parse-int % "shot room") args))
+    (assoc state :error game/invalid-shot-message)))
+
 (defn- run-command [state command]
   (let [[action & args] (command-tokens command)]
     (case (some-> action str/lower-case)
-      "m" (if (= 1 (count args))
-            (game/try-move-player state (parse-int (first args) "move room"))
-            (assoc state :error game/invalid-move-message))
-      "s" (if (<= 1 (count args) 5)
-            (game/try-shoot-arrow state (mapv #(parse-int % "shot room") args))
-            (assoc state :error game/invalid-shot-message))
-      (assoc state :error (str (str/upper-case (or action "")) " IS NOT A COMMAND")))))
+      "m" (scripted-move state args)
+      "s" (scripted-shot state args)
+      (invalid-command state action))))
 
 (defn- scripted-commands [options]
   (when-let [commands (:commands options)]
@@ -162,32 +171,25 @@
                    (seq (rest remaining)))
           (recur next-state (rest remaining)))))))
 
-(defn- inspect! [args]
-  (let [options (parse-args args)
-        state (configured-state options)]
-    (print-topology!)
-    (print-setup! "SETUP" state)
-    (when (:same-setup options)
-      (print-setup! "REUSED SETUP" (game/reuse-setup state)))
-    (when-let [room (:adjacent-room options)]
-      (print-adjacent-hazards! state room))
-    (when-let [commands (scripted-commands options)]
-      (run-script! state commands))))
-
 (defn inspect-main [& args]
   (try
-    (if (seq args)
-      (inspect! args)
-      (let [launch (launch-game)]
-        (println instructions-prompt)
-        (flush)
-        (when-let [answer (read-line)]
-          (doseq [line (:output (answer-instructions launch answer))]
-            (println line)))))
+    (let [options (parse-args args)
+          state (configured-state options)]
+      (print-topology!)
+      (print-setup! "SETUP" state)
+      (when (:same-setup options)
+        (print-setup! "REUSED SETUP" (game/reuse-setup state)))
+      (when-let [room (:adjacent-room options)]
+        (print-adjacent-hazards! state room))
+      (when-let [commands (scripted-commands options)]
+        (run-script! state commands)))
     (catch Exception e
       (binding [*out* *err*]
         (println (.getMessage e)))
       (System/exit 1))))
+
+(defn inspect [& args]
+  (apply inspect-main args))
 
 (defn- explicit-launch-options? [options]
   (or (:seed options) (explicit-setup? options)))
@@ -222,16 +224,28 @@
         (print-lines! (:output turn))
         (:state turn)))))
 
+(defn- next-loop-state [state]
+  (if (= :lost (:status state))
+    (continue-after-terminal state)
+    state))
+
+(defn- continue-loop? [state]
+  (= :in-progress (:status state :in-progress)))
+
+(defn- enter-shell-command [state command]
+  (let [{:keys [state output]} (ui/enter-command state command)]
+    (print-lines! output)
+    (next-loop-state state)))
+
+(defn- read-next-state [state]
+  (when (continue-loop? state)
+    (when-let [command (read-line)]
+      (enter-shell-command state command))))
+
 (defn- run-game-loop! [state]
   (loop [state state]
-    (when (and state (= :in-progress (:status state :in-progress)))
-      (when-let [command (read-line)]
-        (let [{:keys [state output]} (ui/enter-command state command)]
-          (print-lines! output)
-          (if (= :lost (:status state))
-            (recur (continue-after-terminal state))
-            (when (= :in-progress (:status state :in-progress))
-              (recur state))))))))
+    (when-let [state (and state (read-next-state state))]
+      (recur state))))
 
 (defn -main [& args]
   (let [launch (initial-launch args)]

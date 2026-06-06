@@ -3,8 +3,11 @@
             [clojure.test :refer [deftest is]]
             [htw.cli :as cli]))
 
-(defn- output-lines [& args]
+(defn- inspection-output-lines [& args]
   (str/split-lines (with-out-str (apply cli/inspect-main args))))
+
+(defn- output-lines [& args]
+  (apply inspection-output-lines args))
 
 (deftest launch-starts-with-instructions-prompt-and-random-seed
   (let [first-launch (cli/launch-game)
@@ -19,7 +22,7 @@
     (is (some #{"SHOOT OR MOVE (S-M)?"} (:output continued)))))
 
 (deftest inspect-prints-canonical-topology-and-seeded-setup
-  (let [lines (output-lines "--seed" "1973")]
+  (let [lines (inspection-output-lines "--seed" "1973")]
     (is (some #{"CAVE EXITS"} lines))
     (is (some #{"1: 2, 5, 8"} lines))
     (is (some #{"20: 13, 16, 19"} lines))
@@ -30,18 +33,18 @@
     (is (some #{"BATS: 1, 7"} lines))))
 
 (deftest inspect-prints-reused-setup
-  (let [lines (output-lines "--seed" "1973" "--same-setup" "true")
+  (let [lines (inspection-output-lines "--seed" "1973" "--same-setup" "true")
         setup (subvec (vec lines) 22 26)
         reused (subvec (vec lines) 27 31)]
     (is (= "REUSED SETUP" (nth lines 26)))
     (is (= setup reused))))
 
 (deftest inspect-prints-explicit-adjacent-hazards
-  (let [lines (output-lines "--player" "1"
-                            "--wumpus" "2"
-                            "--pits" "3,4"
-                            "--bats" "5,6"
-                            "--adjacent" "1")]
+  (let [lines (inspection-output-lines "--player" "1"
+                                       "--wumpus" "2"
+                                       "--pits" "3,4"
+                                       "--bats" "5,6"
+                                       "--adjacent" "1")]
     (is (some #{"PLAYER: 1"} lines))
     (is (some #{"WUMPUS: 2"} lines))
     (is (some #{"PITS: 3, 4"} lines))
@@ -52,8 +55,9 @@
     (is (some #{"BATS: 1"} lines))))
 
 (deftest inspect-defaults-to-a-deterministic-seed
-  (let [lines (output-lines)]
-    (is (some #{"INSTRUCTIONS (Y-N)?"} lines))))
+  (let [lines (inspection-output-lines)]
+    (is (some #{"SETUP"} lines))
+    (is (some #{"PLAYER: 16"} lines))))
 
 (deftest parser-rejects-invalid-input
   (is (thrown-with-msg? clojure.lang.ExceptionInfo
@@ -128,23 +132,27 @@
       (with-in-str input
         (apply cli/-main args)))))
 
+(defn- shell-lines-with-hazards [input player-room wumpus-room & args]
+  (apply shell-lines input
+         "--player" (str player-room)
+         "--wumpus" (str wumpus-room)
+         "--pits" "14,15"
+         "--bats" "16,17"
+         args))
+
 (deftest shell-main-can-skip-instructions-and-win
-  (let [lines (shell-lines "n\ns 2\n"
-                           "--player" "1"
-                           "--wumpus" "2"
-                           "--pits" "14,15"
-                           "--bats" "16,17")]
+  (let [lines (shell-lines-with-hazards "n\ns 2\n" 1 2)]
     (is (some #{"INSTRUCTIONS (Y-N)?"} lines))
     (is (some #{"YOU ARE IN ROOM 1"} lines))
     (is (some #{"AHA! YOU GOT THE WUMPUS!"} lines))
     (is (some #{"HEE HEE HEE - THE WUMPUS'LL GETCHA NEXT TIME!!"} lines))))
 
 (deftest shell-main-can-show-instructions-lose-and-replay
-  (let [lines (shell-lines "y\nm 2\ny\n"
-                           "--player" "1"
-                           "--wumpus" "13"
-                           "--pits" "2,15"
-                           "--bats" "16,17")]
+  (let [lines (shell-lines-with-hazards "y\nm 2\ny\n"
+                                        1
+                                        13
+                                        "--pits"
+                                        "2,15")]
     (is (some #{"WELCOME TO 'HUNT THE WUMPUS'"} lines))
     (is (some #{"YYYIIIIEEEE . . . FELL IN PIT"} lines))
     (is (some #{"HA HA HA - YOU LOSE!"} lines))

@@ -18,20 +18,6 @@ branch name: swarmforge-cleaner
 
 Summary: Cleaner found no Clojure source, tests, build descriptor, or acceptance pipeline in the assigned worktree; forwarding the current branch state for architectural review.
 
-## 2026-06-05 13:54:23 CDT
-
-Received handoff:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: none
-branch name: swarmforge-cleaner
-10-character commit hash: 6df427e09c
-```
-
-Action taken: re-read architect role and constitution; merged the named cleaner state into the architect branch and applied architect role rules.
-
 ## 2026-06-05 13:58:38 CDT - sent handoff to coder
 
 Complete handoff message:
@@ -233,20 +219,6 @@ branch name: swarmforge-coder
 ```
 
 Reason: Current task1 cleanup and required architect handoff are complete; processing queued messages in sorted order.
-
-## 2026-06-05 14:26:03 CDT
-
-Received handoff:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task1-setup
-branch name: swarmforge-cleaner
-10-character commit hash: 5cbb416800
-```
-
-Action taken: re-read architect role and constitution; merged the named cleaner state into the architect branch and applied architect role rules.
 
 ## 2026-06-05 14:29:39 CDT - Sent Handoff
 
@@ -500,22 +472,6 @@ branch name: swarmforge-coder
 
 Reason: Task3 cleanup and required architect handoff are complete; processing queued messages in sorted order.
 
-## 2026-06-05 14:38:59 CDT
-
-Sent handoff to hardender.
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: architect
-specifier handoff name: task2-movement
-branch name: swarmforge-architect
-10-character commit hash: 8868e92fd3
-```
-
-Summary: Architect merged task2 movement, kept text-shaped wake choices at the acceptance boundary, and broadened movement/warning property coverage.
-
 ## 2026-06-05 14:39:44 CDT
 
 Sent handoff to architect.
@@ -531,50 +487,6 @@ branch name: swarmforge-cleaner
 ```
 
 Summary: Cleaner completed structure-preserving cleanup for task4 game loop and forwarded the branch for architectural review.
-
-## 2026-06-05 14:40:02 CDT
-
-Queued message processed:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task3-shooting
-branch name: swarmforge-cleaner
-10-character commit hash: 3a82032e3c
-```
-
-Reason for note: message arrived while task2-movement work was in progress; processing after completing and sending the required task2-movement handoff.
-
-## 2026-06-05 14:40:02 CDT
-
-Received handoff:
-
-```text
-Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task3-shooting
-branch name: swarmforge-cleaner
-10-character commit hash: 3a82032e3c
-```
-
-Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
-
-## 2026-06-05 14:45:23 CDT
-
-Sent handoff to hardender.
-
-Message:
-
-```text
-Re-read your role and constitution.
-sender role: architect
-specifier handoff name: task3-shooting
-branch name: swarmforge-architect
-10-character commit hash: 85d0298cce
-```
-
-Summary: Architect merged task3 shooting, preserved structured domain choices, extracted arrow traversal into `htw.arrow`, and added arrow traversal property coverage.
 
 ## 2026-06-05 14:40:43 CDT
 
@@ -608,30 +520,66 @@ branch name: swarmforge-cleaner
 
 Summary: Cleaner verified the shell launch implementation and forwarded the branch for architectural review.
 
-## 2026-06-05 14:46:11 CDT
+## 2026-06-05 15:01:37 CDT
 
-Queued message processed:
+Received QA handoff.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task1-setup
+branch name: swarmforge-QA
+10-character commit hash: 3f3ce9bd27
+```
+
+Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
+
+## 2026-06-06 11:33:14 CDT
+
+Sent handoff to architect.
+
+Message:
 
 ```text
 Re-read your role and constitution.
 sender role: cleaner
-specifier handoff name: task4-game-loop
+specifier handoff name: htw-shell-launch
 branch name: swarmforge-cleaner
-10-character commit hash: 9d0e0fd14c
+10-character commit hash: pending commit
 ```
 
-Reason for note: message arrived while task3-shooting work was in progress; processing after completing and sending the required task3-shooting handoff.
+Summary: Cleaner reduced local CLI complexity and duplicate shell-main test setup, then forwarded the branch for architectural review.
 
-## 2026-06-05 14:46:11 CDT
+## 2026-06-05 15:40:31 CDT
 
-Received handoff:
+Received QA handoff.
+
+Message:
 
 ```text
 Re-read your role and constitution.
-sender role: cleaner
-specifier handoff name: task4-game-loop
-branch name: swarmforge-cleaner
-10-character commit hash: 9d0e0fd14c
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 27d865d235
 ```
 
-Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
+
+## 2026-06-05 15:17:23 CDT
+
+Received QA handoff.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task3-shooting
+branch name: swarmforge-QA
+10-character commit hash: 9e1c64a0b2
+```
+
+Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
