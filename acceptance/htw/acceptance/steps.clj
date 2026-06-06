@@ -26,6 +26,12 @@
     []
     (parse-int-list value)))
 
+(defn- parse-shell-options [value]
+  (remove str/blank? (str/split (str/trim (str value)) #"\s+")))
+
+(defn- terminal-input [value]
+  (str (str/join "\n" (map str/trim (str/split (str value) #";"))) "\n"))
+
 (defn- outcome-status [value]
   (case (str/trim (str value))
     "lost" :lost
@@ -54,6 +60,30 @@
   (when-not (some #{line} (:output @world))
     (fail! (str "output missing " label ": " line))))
 
+(defn- shell-lines [input args]
+  (str/split-lines
+    (with-out-str
+      (with-in-str input
+        (apply cli/-main args)))))
+
+(defn- first-int-after [prefix lines]
+  (some (fn [line]
+          (when (str/starts-with? line prefix)
+            (parse-int (subs line (count prefix)))))
+        lines))
+
+(defn- arrow-fallback-room [lines]
+  (some (fn [line]
+          (when (str/starts-with? line "ARROW PATH:")
+            (first (parse-int-list (subs line (count "ARROW PATH:"))))))
+        lines))
+
+(defn- observed-random-room [event-type lines]
+  (case event-type
+    :bat-transport (first-int-after "PLAYER:" lines)
+    :wumpus-wake (first-int-after "WUMPUS:" lines)
+    :arrow-fallback (arrow-fallback-room lines)))
+
 (defn- seed-from-start-step [expanded]
   (when-let [[_ seed] (re-matches #"a game is started with seed ([0-9]+)" expanded)]
     (parse-int seed)))
@@ -71,6 +101,71 @@
 
     "the project command directory is available on the shell path"
     (swap! world assoc :command-path "bin")
+
+    "htw is launched with fixed setup <setup_options>"
+    (swap! world assoc :setup-options (parse-shell-options (:setup_options example)))
+
+    "no bat transport override is supplied"
+    (swap! world assoc :random-event-type :bat-transport)
+
+    "no Wumpus wake override is supplied"
+    (swap! world assoc :random-event-type :wumpus-wake)
+
+    "no arrow deviation override is supplied"
+    (swap! world assoc :random-event-type :arrow-fallback)
+
+    "QA plays the htw command with seeds <seeds> and terminal input <terminal_input>"
+    (let [input (terminal-input (:terminal_input example))
+          event-type (:random-event-type @world)
+          base-options (:setup-options @world)
+          observed (mapv (fn [seed]
+                           (let [lines (shell-lines input (concat base-options ["--seed" (str seed)]))]
+                             (or (observed-random-room event-type lines)
+                                 (fail! (str "could not observe random room for seed " seed)))))
+                         (parse-int-list (:seeds example)))]
+      (swap! world assoc :observed-random-rooms observed))
+
+    "the observed bat transport rooms are within <legal_transport_rooms>"
+    (let [legal (set (parse-int-list (:legal_transport_rooms example)))]
+      (when-not (every? legal (:observed-random-rooms @world))
+        (fail! (str "bat transport rooms outside legal set: " (:observed-random-rooms @world)))))
+
+    "the observed Wumpus wake rooms are within <legal_wake_rooms>"
+    (let [legal (set (parse-int-list (:legal_wake_rooms example)))]
+      (when-not (every? legal (:observed-random-rooms @world))
+        (fail! (str "Wumpus wake rooms outside legal set: " (:observed-random-rooms @world)))))
+
+    "the observed arrow fallback rooms are within <legal_fallback_rooms>"
+    (let [legal (set (parse-int-list (:legal_fallback_rooms example)))]
+      (when-not (every? legal (:observed-random-rooms @world))
+        (fail! (str "arrow fallback rooms outside legal set: " (:observed-random-rooms @world)))))
+
+    "at least <minimum_distinct_rooms> distinct bat transport rooms are observed"
+    (when (< (count (set (:observed-random-rooms @world)))
+             (parse-int (:minimum_distinct_rooms example)))
+      (fail! (str "not enough distinct bat transport rooms: " (:observed-random-rooms @world))))
+
+    "at least <minimum_distinct_rooms> distinct Wumpus wake rooms are observed"
+    (when (< (count (set (:observed-random-rooms @world)))
+             (parse-int (:minimum_distinct_rooms example)))
+      (fail! (str "not enough distinct Wumpus wake rooms: " (:observed-random-rooms @world))))
+
+    "at least <minimum_distinct_rooms> distinct arrow fallback rooms are observed"
+    (when (< (count (set (:observed-random-rooms @world)))
+             (parse-int (:minimum_distinct_rooms example)))
+      (fail! (str "not enough distinct arrow fallback rooms: " (:observed-random-rooms @world))))
+
+    "the observed bat transport rooms are not always <first_legal_room>"
+    (when (every? #{(parse-int (:first_legal_room example))} (:observed-random-rooms @world))
+      (fail! (str "bat transport rooms were always " (:first_legal_room example))))
+
+    "the observed Wumpus wake rooms are not always <first_legal_room>"
+    (when (every? #{(parse-int (:first_legal_room example))} (:observed-random-rooms @world))
+      (fail! (str "Wumpus wake rooms were always " (:first_legal_room example))))
+
+    "the observed arrow fallback rooms are not always <first_legal_room>"
+    (when (every? #{(parse-int (:first_legal_room example))} (:observed-random-rooms @world))
+      (fail! (str "arrow fallback rooms were always " (:first_legal_room example))))
 
     "the cave topology is inspected"
     (swap! world assoc :topology cave/topology)

@@ -1,7 +1,8 @@
 (ns htw.game
   (:require [htw.arrow :as arrow]
             [htw.cave :as cave]
-            [htw.placement :as placement]))
+            [htw.placement :as placement]
+            [htw.random :as random]))
 
 (def pit-message "YYYIIIIEEEE . . . FELL IN PIT")
 (def bat-message "ZAP -- SUPER BAT SNATCH! ELSEWHEREVILLE FOR YOU!")
@@ -37,7 +38,7 @@
       (update :arrows #(or % 5))))
 
 (defn start-game [seed]
-  (place-entities (placement/seeded-room-order seed)))
+  (assoc (place-entities (placement/seeded-room-order seed)) :seed seed))
 
 (defn reuse-setup [state]
   state)
@@ -84,7 +85,9 @@
 
 (defn- wake-choice-room [state]
   (or (selected-wake-room state (:wumpus-wake-choice state))
-      (first (wumpus-wake-options state))))
+      (random/choice state
+                     [:wumpus-wake (:player-room state) (:wumpus-room state) (:arrows state)]
+                     (wumpus-wake-options state))))
 
 (declare resolve-arrival)
 
@@ -96,10 +99,12 @@
       (assoc moved :status :lost)
       moved)))
 
-(defn- transport-room [{:keys [bat-transport-room bat-rooms]}]
+(defn- transport-room [{:keys [bat-transport-room bat-rooms] :as state}]
   (if (and bat-transport-room (not (contains? bat-rooms bat-transport-room)))
     bat-transport-room
-    (rand-nth (vec (remove bat-rooms cave/rooms)))))
+    (random/choice state
+                   [:bat-transport (:player-room state) (:wumpus-room state)]
+                   (remove bat-rooms cave/rooms))))
 
 (defn- resolve-arrival [state]
   (let [{:keys [player-room wumpus-room pit-rooms bat-rooms]} state]
@@ -147,16 +152,26 @@
       exhausted? (assoc :status :lost)
       exhausted? (append-message out-of-arrows-message))))
 
+(defn- terminal-visit? [state room]
+  (or (= (:wumpus-room state) room)
+      (= (:player-room state) room)))
+
+(defn- visits-through-hit [state visits]
+  (let [[before after] (split-with #(not (terminal-visit? state %)) visits)]
+    (vec (concat before (take 1 after)))))
+
 (defn- shot-result [state visits]
-  (cond
-    (some #{(:wumpus-room state)} visits)
-    (arrow-hit-result state visits :won wumpus-hit-message)
+  (let [resolved-visits (visits-through-hit state visits)
+        terminal-room (last resolved-visits)]
+    (cond
+      (= (:wumpus-room state) terminal-room)
+      (arrow-hit-result state resolved-visits :won wumpus-hit-message)
 
-    (some #{(:player-room state)} visits)
-    (arrow-hit-result state visits :lost self-hit-message)
+      (= (:player-room state) terminal-room)
+      (arrow-hit-result state resolved-visits :lost self-hit-message)
 
-    :else
-    (missed-arrow-result state visits)))
+      :else
+      (missed-arrow-result state visits))))
 
 (defn try-shoot-arrow [state path]
   (let [state (normalize-state state)]

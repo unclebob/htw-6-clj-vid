@@ -45,9 +45,15 @@
     :else
     (:output (display-turn state))))
 
+(defn- observation-output [state]
+  (cond-> [(str "PLAYER: " (:player-room state))
+           (str "WUMPUS: " (:wumpus-room state))]
+    (:arrow-visits state)
+    (conj (str "ARROW PATH: " (str/join ", " (:arrow-visits state))))))
+
 (defn- result [state extra-output]
   {:state state
-   :output (vec (concat extra-output (terminal-output state)))})
+   :output (vec (concat extra-output (observation-output state) (terminal-output state)))})
 
 (defn- invalid-result [state message]
   {:state state
