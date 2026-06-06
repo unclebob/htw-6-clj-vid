@@ -794,3 +794,17 @@ branch name: swarmforge-QA
 ```
 
 Reason for note: message arrived while architect-merged htw-shell-launch hardening verification and handoff were in progress; merged the named QA state into the hardender branch and applied no hardender-specific work to this QA handoff.
+
+## 2026-06-06 12:04:54 CDT
+
+Received QA handoff:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: b802fffff6
+```
+
+Action taken: re-read hardender role and constitution; merged the named QA state into the hardender branch and applied no hardender-specific work to this QA handoff.
