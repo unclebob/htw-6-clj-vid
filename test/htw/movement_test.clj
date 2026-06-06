@@ -35,6 +35,22 @@
     (is (= [game/bat-message game/pit-message]
            (:messages bat-pit)))))
 
+(deftest bat-transport-does-not-drop-player-into-bats
+  (let [bat-rooms (set (remove #{2} (range 1 21)))
+        default-transport (game/move-player
+                            (configured-game 2 13 [] bat-rooms)
+                            1)
+        configured-bat-transport (game/move-player
+                                   (configured-game 2 13 [] bat-rooms
+                                                    {:bat-transport-room 17})
+                                   1)]
+    (is (= 2 (:player-room default-transport)))
+    (is (= :in-progress (:status default-transport)))
+    (is (= [game/bat-message] (:messages default-transport)))
+    (is (= 2 (:player-room configured-bat-transport)))
+    (is (= :in-progress (:status configured-bat-transport)))
+    (is (= [game/bat-message] (:messages configured-bat-transport)))))
+
 (deftest warnings-are-adjacent-stable-and-deduplicated
   (are [state warnings] (= warnings (game/turn-warnings state))
     (configured-game 1 2 [3 4] [6 7]) ["I SMELL A WUMPUS"]

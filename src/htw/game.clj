@@ -96,8 +96,10 @@
       (assoc moved :status :lost)
       moved)))
 
-(defn- transport-room [state]
-  (or (:bat-transport-room state) (first cave/rooms)))
+(defn- transport-room [{:keys [bat-transport-room bat-rooms]}]
+  (if (and bat-transport-room (not (contains? bat-rooms bat-transport-room)))
+    bat-transport-room
+    (rand-nth (vec (remove bat-rooms cave/rooms)))))
 
 (defn- resolve-arrival [state]
   (let [{:keys [player-room wumpus-room pit-rooms bat-rooms]} state]
