@@ -352,6 +352,20 @@ branch name: swarmforge-cleaner
 
 Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
 
+## 2026-06-06 11:34:25 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-cleaner
+10-character commit hash: 5be47701ed
+```
+
+Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+
 ## 2026-06-05 14:55:35 CDT
 
 Sent handoff to hardender.
