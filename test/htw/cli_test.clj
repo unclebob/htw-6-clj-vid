@@ -9,6 +9,10 @@
 (defn- output-lines [& args]
   (apply inspection-output-lines args))
 
+(defn- assert-lines-contain [lines expected-lines]
+  (doseq [expected expected-lines]
+    (is (some #{expected} lines))))
+
 (deftest launch-starts-with-instructions-prompt-and-random-seed
   (let [first-launch (cli/launch-game)
         second-launch (cli/launch-game)]
@@ -40,19 +44,20 @@
     (is (= setup reused))))
 
 (deftest inspect-prints-explicit-adjacent-hazards
-  (let [lines (inspection-output-lines "--player" "1"
-                                       "--wumpus" "2"
-                                       "--pits" "3,4"
-                                       "--bats" "5,6"
-                                       "--adjacent" "1")]
-    (is (some #{"PLAYER: 1"} lines))
-    (is (some #{"WUMPUS: 2"} lines))
-    (is (some #{"PITS: 3, 4"} lines))
-    (is (some #{"BATS: 5, 6"} lines))
-    (is (some #{"ADJACENT HAZARDS FOR ROOM: 1"} lines))
-    (is (some #{"WUMPUS: 1"} lines))
-    (is (some #{"PITS: 0"} lines))
-    (is (some #{"BATS: 1"} lines))))
+  (let [lines (output-lines "--player" "1"
+                            "--wumpus" "2"
+                            "--pits" "3,4"
+                            "--bats" "5,6"
+                            "--adjacent" "1")]
+    (assert-lines-contain lines
+                          ["PLAYER: 1"
+                           "WUMPUS: 2"
+                           "PITS: 3, 4"
+                           "BATS: 5, 6"
+                           "ADJACENT HAZARDS FOR ROOM: 1"
+                           "WUMPUS: 1"
+                           "PITS: 0"
+                           "BATS: 1"])))
 
 (deftest inspect-defaults-to-a-deterministic-seed
   (let [lines (inspection-output-lines)]
@@ -79,9 +84,10 @@
                             "--pits" "14,15"
                             "--bats" "16,17"
                             "--commands" "m 2")]
-    (is (some #{"COMMAND: m 2"} lines))
-    (is (some #{"PLAYER: 2"} lines))
-    (is (some #{"STATUS: IN-PROGRESS"} lines))))
+    (assert-lines-contain lines
+                          ["COMMAND: m 2"
+                           "PLAYER: 2"
+                           "STATUS: IN-PROGRESS"])))
 
 (deftest scripted-shoot-command-prints-arrow-diagnostics
   (let [lines (output-lines "--player" "1"
@@ -141,23 +147,29 @@
          args))
 
 (deftest shell-main-can-skip-instructions-and-win
-  (let [lines (shell-lines-with-hazards "n\ns 2\n" 1 2)]
-    (is (some #{"INSTRUCTIONS (Y-N)?"} lines))
-    (is (some #{"YOU ARE IN ROOM 1"} lines))
-    (is (some #{"AHA! YOU GOT THE WUMPUS!"} lines))
-    (is (some #{"HEE HEE HEE - THE WUMPUS'LL GETCHA NEXT TIME!!"} lines))))
+  (let [lines (shell-lines "n\ns 2\n"
+                           "--player" "1"
+                           "--wumpus" "2"
+                           "--pits" "14,15"
+                           "--bats" "16,17")]
+    (assert-lines-contain lines
+                          ["INSTRUCTIONS (Y-N)?"
+                           "YOU ARE IN ROOM 1"
+                           "AHA! YOU GOT THE WUMPUS!"
+                           "HEE HEE HEE - THE WUMPUS'LL GETCHA NEXT TIME!!"])))
 
 (deftest shell-main-can-show-instructions-lose-and-replay
-  (let [lines (shell-lines-with-hazards "y\nm 2\ny\n"
-                                        1
-                                        13
-                                        "--pits"
-                                        "2,15")]
-    (is (some #{"WELCOME TO 'HUNT THE WUMPUS'"} lines))
-    (is (some #{"YYYIIIIEEEE . . . FELL IN PIT"} lines))
-    (is (some #{"HA HA HA - YOU LOSE!"} lines))
-    (is (some #{"SAME SET UP (Y-N)?"} lines))
-    (is (some #{"YOU ARE IN ROOM 1"} lines))))
+  (let [lines (shell-lines "y\nm 2\ny\n"
+                           "--player" "1"
+                           "--wumpus" "13"
+                           "--pits" "2,15"
+                           "--bats" "16,17")]
+    (assert-lines-contain lines
+                          ["WELCOME TO 'HUNT THE WUMPUS'"
+                           "YYYIIIIEEEE . . . FELL IN PIT"
+                           "HA HA HA - YOU LOSE!"
+                           "SAME SET UP (Y-N)?"
+                           "YOU ARE IN ROOM 1"])))
 
 (deftest shell-main-can-observe-random-seed
   (let [lines (shell-lines "n\n" "--show-seed" "true")]
