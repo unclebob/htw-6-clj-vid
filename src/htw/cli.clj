@@ -8,6 +8,9 @@
 
 (defonce seed-counter (atom 0))
 
+(defn exit! [status]
+  (System/exit status))
+
 (defn random-seed []
   (+ (System/nanoTime) (swap! seed-counter inc)))
 
@@ -250,7 +253,11 @@
     (catch Exception e
       (binding [*out* *err*]
         (println (.getMessage e)))
-      (System/exit 1))))
+      (exit! 1))))
 
 (defn inspect [& args]
   (apply inspect-main args))
+
+;; clj-mutate-manifest-begin
+;; {:version 1, :tested-at "2026-06-06T11:55:21.254401-05:00", :module-hash "2143156959", :forms [{:id "form/0/ns", :kind "ns", :line 1, :end-line 5, :hash "1095944540"} {:id "def/instructions-prompt", :kind "def", :line 7, :end-line 7, :hash "282711655"} {:id "form/2/defonce", :kind "defonce", :line 9, :end-line 9, :hash "650038718"} {:id "defn/exit!", :kind "defn", :line 11, :end-line 12, :hash "552446272"} {:id "defn/random-seed", :kind "defn", :line 14, :end-line 15, :hash "363677862"} {:id "defn/launch-game", :kind "defn", :line 17, :end-line 21, :hash "2085306560"} {:id "defn/answer-instructions", :kind "defn", :line 23, :end-line 25, :hash "-305170808"} {:id "defn-/parse-int", :kind "defn-", :line 27, :end-line 31, :hash "1836147578"} {:id "defn-/parse-room-list", :kind "defn-", :line 33, :end-line 37, :hash "-97128823"} {:id "defn-/parse-wake-choice", :kind "defn-", :line 39, :end-line 42, :hash "-1858852301"} {:id "def/option-parsers", :kind "def", :line 44, :end-line 57, :hash "-1081062010"} {:id "defn-/parse-option", :kind "defn-", :line 59, :end-line 63, :hash "-2129025786"} {:id "defn-/parse-args", :kind "defn-", :line 65, :end-line 68, :hash "-1374538191"} {:id "defn-/explicit-setup?", :kind "defn-", :line 70, :end-line 71, :hash "1583514206"} {:id "defn-/setup-from", :kind "defn-", :line 73, :end-line 85, :hash "111081715"} {:id "def/state-options", :kind "def", :line 87, :end-line 88, :hash "-369228174"} {:id "defn-/configured-state", :kind "defn-", :line 90, :end-line 91, :hash "-1662635440"} {:id "defn-/room-line", :kind "defn-", :line 93, :end-line 94, :hash "-1725658454"} {:id "defn-/print-topology!", :kind "defn-", :line 96, :end-line 99, :hash "1792414841"} {:id "defn-/sorted-list", :kind "defn-", :line 101, :end-line 102, :hash "-969728569"} {:id "defn-/print-setup!", :kind "defn-", :line 104, :end-line 109, :hash "389176361"} {:id "defn-/print-adjacent-hazards!", :kind "defn-", :line 111, :end-line 116, :hash "1140572204"} {:id "defn-/print-turn!", :kind "defn-", :line 118, :end-line 124, :hash "479348580"} {:id "defn-/print-result!", :kind "defn-", :line 126, :end-line 136, :hash "-402500160"} {:id "defn-/command-tokens", :kind "defn-", :line 138, :end-line 139, :hash "2031381878"} {:id "defn-/invalid-command", :kind "defn-", :line 141, :end-line 142, :hash "-961833724"} {:id "defn-/scripted-move", :kind "defn-", :line 144, :end-line 147, :hash "-972026345"} {:id "defn-/scripted-shot", :kind "defn-", :line 149, :end-line 152, :hash "-559936024"} {:id "defn-/run-command", :kind "defn-", :line 154, :end-line 159, :hash "-23417405"} {:id "defn-/scripted-commands", :kind "defn-", :line 161, :end-line 163, :hash "1340423622"} {:id "defn-/run-script!", :kind "defn-", :line 165, :end-line 175, :hash "-315896525"} {:id "defn-/explicit-launch-options?", :kind "defn-", :line 177, :end-line 178, :hash "1868215521"} {:id "defn-/with-observed-seed", :kind "defn-", :line 180, :end-line 183, :hash "-1910644406"} {:id "defn-/initial-launch", :kind "defn-", :line 185, :end-line 195, :hash "1888578743"} {:id "defn-/print-lines!", :kind "defn-", :line 197, :end-line 200, :hash "211376327"} {:id "defn-/continue-after-terminal", :kind "defn-", :line 202, :end-line 208, :hash "2131642771"} {:id "defn-/next-loop-state", :kind "defn-", :line 210, :end-line 213, :hash "-1591562258"} {:id "defn-/continue-loop?", :kind "defn-", :line 215, :end-line 216, :hash "-713442341"} {:id "defn-/enter-shell-command", :kind "defn-", :line 218, :end-line 221, :hash "-654402039"} {:id "defn-/read-next-state", :kind "defn-", :line 223, :end-line 226, :hash "-805143145"} {:id "defn-/run-game-loop!", :kind "defn-", :line 228, :end-line 231, :hash "-1259505018"} {:id "defn/-main", :kind "defn", :line 233, :end-line 239, :hash "-1679600654"} {:id "defn/inspect-main", :kind "defn", :line 241, :end-line 256, :hash "-583779460"} {:id "defn/inspect", :kind "defn", :line 258, :end-line 259, :hash "749474069"}]}
+;; clj-mutate-manifest-end

@@ -2,6 +2,34 @@
 
 Handoff notes are recorded here by agents as handoffs are received and sent.
 
+## 2026-06-06 11:50:09 CDT - Sent QA Complete Handoffs
+
+Complete handoff message sent to specifier, coder, cleaner, architect, and hardender:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: pending commit
+```
+
+Summary: QA completed final verification for merged hardender state `eb2b384b4a`; all required unit, property, acceptance, UI E2E, CRAP, and DRY checks passed.
+
+## 2026-06-06 11:46:06 CDT - Received Handoff
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-hardender
+10-character commit hash: eb2b384b4a
+```
+
+Action taken: re-read QA role and constitution; prepared to merge the named hardender state into `swarmforge-QA` and apply QA role rules.
+
 ## 2026-06-06 11:37:33 CDT - Sent QA Complete Handoffs
 
 Complete handoff message sent to specifier, coder, cleaner, architect, and hardender:
@@ -352,11 +380,53 @@ branch name: swarmforge-QA
 
 Summary: QA completed final verification for htw-shell-launch and committed shell game loop fixes plus UI E2E coverage.
 
-## 2026-06-05 15:15:52 CDT - Sent QA Complete Handoff
+## 2026-06-05 15:41:56 CDT - Received QA handoff
 
-Message sent to specifier, coder, cleaner, architect, and hardender:
+Complete handoff message received:
 
-```text
+```
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 27d865d235
+```
+
+Action taken: re-read hardender role and constitution; merged the named QA state into the hardender branch and applied no hardender-specific work to this QA handoff.
+
+## 2026-06-05 15:28:27 CDT - Sent handoff to QA
+
+Complete handoff message sent:
+
+```
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: task4-game-loop
+branch name: swarmforge-hardender
+10-character commit hash: 778b6d7a31
+```
+
+Summary: Task4 UI acceptance mutation hardening completed and committed for QA review.
+
+## 2026-06-05 15:28:27 CDT - Sent handoff to QA
+
+Complete handoff message sent:
+
+```
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-hardender
+10-character commit hash: 778b6d7a31
+```
+
+Summary: Shell-launch acceptance mutation hardening completed and committed for QA review.
+
+## 2026-06-05 15:30:19 CDT - Queued QA handoff processed
+
+Complete queued handoff message:
+
+```
 Re-read your role and constitution.
 sender role: QA
 specifier handoff name: task3-shooting
@@ -364,19 +434,8 @@ branch name: swarmforge-QA
 10-character commit hash: 9e1c64a0b2
 ```
 
-Summary: QA completed final verification for task3-shooting and committed scripted UI checks for movement and shooting behavior.
+Reason for note: message arrived while task4/shell-launch hardening was in progress; processing after completing and sending the required QA handoffs. Per workflow, merging the named QA state and applying no hardender-specific work to this QA handoff.
 
-## 2026-06-05 15:29:34 CDT - Received Handoff
-
-Re-read your role and constitution.
-sender role: hardender
-specifier handoff name: htw-shell-launch
-branch name: swarmforge-hardender
-10-character commit hash: 778b6d7a31
-
-Action taken: Re-read QA role and constitution; preparing to merge the specified hardender state into the QA branch and apply QA verification.
-
-## 2026-06-05 14:33:25 CDT - Received handoff from architect
 ## 2026-06-05 15:07:33 CDT - Sent handoff to QA
 
 Complete handoff message sent:
@@ -391,19 +450,6 @@ branch name: swarmforge-hardender
 
 Summary: Combined task2/task3 hardening completed and committed for QA review.
 
-## 2026-06-05 14:48:48 CDT - Received Handoff
-
-Re-read your role and constitution.
-sender role: hardender
-specifier handoff name: task1-setup
-branch name: swarmforge-hardender
-10-character commit hash: 41e0485a40
-
-Action taken: Re-read QA role and constitution; preparing to merge the specified hardender state into the QA branch and apply QA verification.
-
-## 2026-06-05 14:47:49 CDT - Sent handoff to QA
-
-Complete handoff message sent:
 ## 2026-06-05 15:08:16 CDT - Queued QA handoff processed
 
 Complete queued handoff message:
@@ -412,39 +458,12 @@ Complete queued handoff message:
 Re-read your role and constitution.
 sender role: QA
 specifier handoff name: task1-setup
-branch name: swarmforge-hardender
-10-character commit hash: 41e0485a40
 branch name: swarmforge-QA
 10-character commit hash: 3f3ce9bd27
 ```
 
 Reason for note: message arrived while task2/task3 hardening was in progress; processing after completing and sending the required task3-shooting QA handoff. Per workflow, merging the named QA state and applying no hardender-specific work to this QA handoff.
 
-## 2026-06-05 15:00:05 CDT - Sent QA Complete Handoff
-
-Message sent to specifier, coder, cleaner, architect, and hardender:
-
-```text
-Re-read your role and constitution.
-sender role: QA
-specifier handoff name: task1-setup
-branch name: swarmforge-QA
-10-character commit hash: 3f3ce9bd27
-```
-
-Summary: QA completed final verification for task1-setup and committed the setup-inspection UI affordance required by the QA suite.
-
-## 2026-06-05 15:08:26 CDT - Received Handoff
-
-Re-read your role and constitution.
-sender role: hardender
-specifier handoff name: task3-shooting
-branch name: swarmforge-hardender
-10-character commit hash: a55ed8bef5
-
-Action taken: Re-read QA role and constitution; preparing to merge the specified hardender state into the QA branch and apply QA verification.
-
-## 2026-06-05 14:49:02 CDT - Queued architect handoff processed
 ## 2026-06-05 15:10:38 CDT - Queued architect handoff processed
 
 Complete queued handoff message:
@@ -625,6 +644,22 @@ sender role: QA
 specifier handoff name: task1-setup
 branch name: swarmforge-QA
 10-character commit hash: 3f3ce9bd27
+```
+
+Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
+
+## 2026-06-06 11:54:54 CDT
+
+Received QA handoff.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: c87dd9adeb
 ```
 
 Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.

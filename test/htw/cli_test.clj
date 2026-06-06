@@ -49,15 +49,14 @@
                             "--pits" "3,4"
                             "--bats" "5,6"
                             "--adjacent" "1")]
-    (assert-lines-contain lines
-                          ["PLAYER: 1"
-                           "WUMPUS: 2"
-                           "PITS: 3, 4"
-                           "BATS: 5, 6"
-                           "ADJACENT HAZARDS FOR ROOM: 1"
-                           "WUMPUS: 1"
-                           "PITS: 0"
-                           "BATS: 1"])))
+    (assert-lines-contain lines ["PLAYER: 1"
+                                 "WUMPUS: 2"
+                                 "PITS: 3, 4"
+                                 "BATS: 5, 6"
+                                 "ADJACENT HAZARDS FOR ROOM: 1"
+                                 "WUMPUS: 1"
+                                 "PITS: 0"
+                                 "BATS: 1"])))
 
 (deftest inspect-defaults-to-a-deterministic-seed
   (let [lines (inspection-output-lines)]
@@ -78,16 +77,28 @@
                         #"pits must contain exactly two rooms"
                         (#'cli/parse-args ["--pits" "1,2,3"]))))
 
+(deftest inspect-main-reports-errors-and-exits-nonzero
+  (let [exit-status (atom nil)
+        err (java.io.StringWriter.)]
+    (binding [*err* err]
+      (try
+        (with-redefs [cli/exit! (fn [status]
+                                  (reset! exit-status status)
+                                  (throw (ex-info "exit" {})))]
+          (cli/inspect-main "--seed" "nope"))
+        (catch clojure.lang.ExceptionInfo _)))
+    (is (= "Invalid seed: nope\n" (str err)))
+    (is (= 1 @exit-status))))
+
 (deftest scripted-move-command-prints-visible-state
   (let [lines (output-lines "--player" "1"
                             "--wumpus" "13"
                             "--pits" "14,15"
                             "--bats" "16,17"
                             "--commands" "m 2")]
-    (assert-lines-contain lines
-                          ["COMMAND: m 2"
-                           "PLAYER: 2"
-                           "STATUS: IN-PROGRESS"])))
+    (is (some #{"COMMAND: m 2"} lines))
+    (is (some #{"PLAYER: 2"} lines))
+    (is (some #{"STATUS: IN-PROGRESS"} lines))))
 
 (deftest scripted-shoot-command-prints-arrow-diagnostics
   (let [lines (output-lines "--player" "1"
@@ -97,9 +108,9 @@
                             "--arrow-deviation" "5"
                             "--wumpus-wake" "stay"
                             "--commands" "s 3 4")]
-    (is (some #{"ARROW PATH: 5, 4"} lines))
-    (is (some #{"ARROWS: 4"} lines))
-    (is (some #{"STATUS: IN-PROGRESS"} lines))))
+    (assert-lines-contain lines ["ARROW PATH: 5, 4"
+                                 "ARROWS: 4"
+                                 "STATUS: IN-PROGRESS"])))
 
 (deftest scripted-command-options-control-random-outcomes
   (let [bat-lines (output-lines "--player" "1"
@@ -125,7 +136,7 @@
                             "--pits" "14,15"
                             "--bats" "16,17"
                             "--arrows" "5"
-                            "--commands" "m 3;s;x")]
+                            "--commands" "m;m 3;s;x")]
     (is (some #{"CAN'T MOVE THERE"} lines))
     (is (some #{"CAN'T SHOOT THERE"} lines))
     (is (some #{"X IS NOT A COMMAND"} lines))
