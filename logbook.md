@@ -2,6 +2,20 @@
 
 Handoff notes are recorded here by agents as handoffs are received and sent.
 
+## 2026-06-06 11:37:33 CDT - Sent QA Complete Handoffs
+
+Complete handoff message sent to specifier, coder, cleaner, architect, and hardender:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: pending commit
+```
+
+Summary: QA completed final verification for `htw-shell-launch`; all required unit, property, acceptance, UI E2E, CRAP, and DRY checks passed after a small QA-owned DRY cleanup in CLI tests.
+
 ## 2026-06-05 13:52:16 CDT
 
 Sent handoff to architect.
@@ -280,6 +294,245 @@ branch name: swarmforge-coder
 
 Reason: Task2 cleanup and required architect handoff are complete; processing queued messages in sorted order.
 
+## 2026-06-05 14:32:12 CDT
+
+Sent handoff to hardender.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: task1-setup
+branch name: swarmforge-architect
+10-character commit hash: 4d8791bd48
+```
+
+Summary: Architect isolated seeded placement ordering behind a dedicated namespace and added lightweight architecture plus separate property checks for task1 setup.
+
+## 2026-06-05 14:33:11 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task2-movement
+branch name: swarmforge-cleaner
+10-character commit hash: c79511601b
+```
+
+Reason for note: message arrived while task1-setup work was in progress; processing after completing and sending the required task1-setup handoff.
+
+## 2026-06-05 14:33:11 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: task2-movement
+branch name: swarmforge-cleaner
+10-character commit hash: c79511601b
+```
+
+Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+
+## 2026-06-05 15:39:06 CDT - Sent QA Complete Handoff
+
+Message sent to specifier, coder, cleaner, architect, and hardender:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 27d865d235
+```
+
+Summary: QA completed final verification for htw-shell-launch and committed shell game loop fixes plus UI E2E coverage.
+
+## 2026-06-05 15:15:52 CDT - Sent QA Complete Handoff
+
+Message sent to specifier, coder, cleaner, architect, and hardender:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task3-shooting
+branch name: swarmforge-QA
+10-character commit hash: 9e1c64a0b2
+```
+
+Summary: QA completed final verification for task3-shooting and committed scripted UI checks for movement and shooting behavior.
+
+## 2026-06-05 15:29:34 CDT - Received Handoff
+
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-hardender
+10-character commit hash: 778b6d7a31
+
+Action taken: Re-read QA role and constitution; preparing to merge the specified hardender state into the QA branch and apply QA verification.
+
+## 2026-06-05 14:33:25 CDT - Received handoff from architect
+## 2026-06-05 15:07:33 CDT - Sent handoff to QA
+
+Complete handoff message sent:
+
+```
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: task3-shooting
+branch name: swarmforge-hardender
+10-character commit hash: a55ed8bef5
+```
+
+Summary: Combined task2/task3 hardening completed and committed for QA review.
+
+## 2026-06-05 14:48:48 CDT - Received Handoff
+
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: task1-setup
+branch name: swarmforge-hardender
+10-character commit hash: 41e0485a40
+
+Action taken: Re-read QA role and constitution; preparing to merge the specified hardender state into the QA branch and apply QA verification.
+
+## 2026-06-05 14:47:49 CDT - Sent handoff to QA
+
+Complete handoff message sent:
+## 2026-06-05 15:08:16 CDT - Queued QA handoff processed
+
+Complete queued handoff message:
+
+```
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task1-setup
+branch name: swarmforge-hardender
+10-character commit hash: 41e0485a40
+branch name: swarmforge-QA
+10-character commit hash: 3f3ce9bd27
+```
+
+Reason for note: message arrived while task2/task3 hardening was in progress; processing after completing and sending the required task3-shooting QA handoff. Per workflow, merging the named QA state and applying no hardender-specific work to this QA handoff.
+
+## 2026-06-05 15:00:05 CDT - Sent QA Complete Handoff
+
+Message sent to specifier, coder, cleaner, architect, and hardender:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: task1-setup
+branch name: swarmforge-QA
+10-character commit hash: 3f3ce9bd27
+```
+
+Summary: QA completed final verification for task1-setup and committed the setup-inspection UI affordance required by the QA suite.
+
+## 2026-06-05 15:08:26 CDT - Received Handoff
+
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: task3-shooting
+branch name: swarmforge-hardender
+10-character commit hash: a55ed8bef5
+
+Action taken: Re-read QA role and constitution; preparing to merge the specified hardender state into the QA branch and apply QA verification.
+
+## 2026-06-05 14:49:02 CDT - Queued architect handoff processed
+## 2026-06-05 15:10:38 CDT - Queued architect handoff processed
+
+Complete queued handoff message:
+
+```
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: task4-game-loop
+branch name: swarmforge-architect
+10-character commit hash: a2a585e1b8
+```
+
+Reason for note: message arrived while task2/task3 hardening was in progress; processing together with queued htw-shell-launch architect handoff. The supplied abbreviated hash did not resolve; resolved to matching architect handoff commit `a2a585ec06...`.
+
+## 2026-06-05 15:10:38 CDT - Queued architect handoff processed
+
+Complete queued handoff message:
+
+```
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-architect
+10-character commit hash: d0f83c3f5c
+```
+
+Reason for note: message arrived while task2/task3 hardening was in progress; processing together with queued task4-game-loop architect handoff. The supplied abbreviated hash did not resolve; resolved to matching architect handoff commit `d0f83c3e2e...`.
+
+## 2026-06-05 14:55:35 CDT
+
+Sent handoff to hardender.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-architect
+10-character commit hash: ccdf288aa0
+```
+
+Summary: Architect merged shell launch and added architecture coverage that keeps CLI dependencies out of domain and UI namespaces.
+
+## 2026-06-05 14:50:36 CDT
+
+Sent handoff to hardender.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: task4-game-loop
+branch name: swarmforge-architect
+10-character commit hash: c9da3312e0
+```
+
+Summary: Architect merged task4 game loop and added architecture coverage that keeps UI dependencies out of the domain namespaces.
+
+## 2026-06-05 14:51:25 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-cleaner
+10-character commit hash: f1f19d8add
+```
+
+Reason for note: message arrived while task3-shooting work was in progress and was processed after completing the earlier queued task4-game-loop handoff.
+
+## 2026-06-05 14:51:25 CDT
+
+Received handoff:
+
+```text
+Re-read your role and constitution.
+sender role: cleaner
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-cleaner
+10-character commit hash: f1f19d8add
+```
+
+Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+
 ## 2026-06-05 14:34:58 CDT
 
 Sent handoff to architect.
@@ -372,6 +625,22 @@ sender role: QA
 specifier handoff name: task1-setup
 branch name: swarmforge-QA
 10-character commit hash: 3f3ce9bd27
+```
+
+Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
+
+## 2026-06-06 11:41:09 CDT
+
+Received QA handoff.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 019291aeea
 ```
 
 Action: Merging the QA branch state identified by the handoff into `swarmforge-cleaner` without applying cleaner-specific work.
