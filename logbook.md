@@ -291,3 +291,16 @@ branch name: swarmforge-QA
 ```
 
 Action taken: Re-read coder role and constitution, recorded the QA handoff, and prepared to merge the specified QA state without applying coder-specific work.
+
+## 2026-06-06 11:43:18 CDT - Processing Queued Handoff
+
+Message:
+```
+Re-read your role and constitution.
+sender role: specifier
+specifier handoff name: random-events-hit-order
+branch name: master
+10-character commit hash: 253ec9942f
+```
+
+Reason: Message arrived while the htw-shell-launch QA handoff merge was in progress; processing after completing and committing the QA merge.
