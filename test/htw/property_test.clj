@@ -3,7 +3,8 @@
             [htw.arrow :as arrow]
             [htw.cave :as cave]
             [htw.game :as game]
-            [htw.placement :as placement]))
+            [htw.placement :as placement]
+            [htw.random :as random]))
 
 (def sample-seeds (range 0 500))
 
@@ -64,3 +65,19 @@
                 path [first-room second-room]]]
     (testing (str start-room " -> " path)
       (is (= path (arrow/visits state path))))))
+
+(deftest seeded-random-choice-properties
+  (doseq [seed sample-seeds
+          salt [[:bat-transport 1 13]
+                [:wumpus-wake 1 10 5]
+                [:arrow-fallback 0 nil 1 20]]
+          :let [options [2 5 8]]]
+    (testing (str "seed " seed " salt " salt)
+      (let [state {:seed seed}
+            choice (random/choice state salt options)]
+        (is (some #{choice} options))
+        (is (= choice (random/choice state salt options)))))))
+
+(deftest unseeded-random-choice-properties
+  (is (= 2 (random/choice {} [:salt] [2 5 8])))
+  (is (nil? (random/choice {:seed 1} [:salt] []))))
