@@ -780,3 +780,17 @@ branch name: swarmforge-hardender
 ```
 
 Summary: Hardender merged the architect CLI split, refreshed mutation manifests for the split modules, and completed required verification.
+
+## 2026-06-06 11:59:31 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: c87dd9adeb
+```
+
+Reason for note: message arrived while architect-merged htw-shell-launch hardening verification and handoff were in progress; merged the named QA state into the hardender branch and applied no hardender-specific work to this QA handoff.
