@@ -761,3 +761,46 @@ branch name: swarmforge-cleaner
 ```
 
 Action taken: re-read architect role and constitution; preparing to merge the named cleaner state into the architect branch and apply architect role rules.
+## 2026-06-06 11:44:12 CDT
+
+Sent handoff to QA.
+
+Message:
+
+```text
+Re-read your role and constitution.
+sender role: hardender
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-hardender
+10-character commit hash: eb2b384b4a
+```
+
+Summary: Hardender closed CLI mutation coverage gaps, refreshed mutation manifests, and completed required verification.
+
+## 2026-06-06 11:47:26 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 019291aeea
+```
+
+Reason for note: message arrived while htw-shell-launch hardening verification and handoff were in progress; merged the named QA state into the hardender branch, recorded the handoff, and applied no hardender-specific work to this QA handoff.
+
+## 2026-06-06 11:51:00 CDT
+
+Queued message processed:
+
+```text
+Re-read your role and constitution.
+sender role: architect
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-architect
+10-character commit hash: b678f2d028
+```
+
+Reason for note: message arrived while htw-shell-launch hardening verification and handoff were in progress; merging the named architect state into the hardender branch and applying hardender role rules to the merged state.

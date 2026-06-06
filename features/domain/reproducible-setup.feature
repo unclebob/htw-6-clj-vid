@@ -1,6 +1,6 @@
 # mutation-stamp: sha256=718bd89f5fd79c0edc15eecb7a82eb4f2484aa155cb5692c2b6c379f697de0a6
 # acceptance-mutation-manifest-begin
-# {"version":1,"tested_at":"2026-06-06T16:42:43Z","feature_name":"Reproducible setup","feature_path":"features/domain/reproducible-setup.feature","background_hash":"74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b","implementation_hash":"unknown","scenarios":[{"index":0,"name":"Reproducible setup 001: same seed produces identical placement","scenario_hash":"8befe71acce5de6c10151dd0502a59db2cf8b764295afe34cb6711e6cfb55eb7","mutation_count":15,"result":{"Total":15,"Killed":15,"Survived":0,"Errors":0},"tested_at":"2026-06-05T19:45:01Z"}]}
+# {"version":1,"tested_at":"2026-06-06T16:56:44Z","feature_name":"Reproducible setup","feature_path":"features/domain/reproducible-setup.feature","background_hash":"74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b","implementation_hash":"unknown","scenarios":[{"index":0,"name":"Reproducible setup 001: same seed produces identical placement","scenario_hash":"8befe71acce5de6c10151dd0502a59db2cf8b764295afe34cb6711e6cfb55eb7","mutation_count":15,"result":{"Total":15,"Killed":15,"Survived":0,"Errors":0},"tested_at":"2026-06-05T19:45:01Z"}]}
 # acceptance-mutation-manifest-end
 
 Feature: Reproducible setup
