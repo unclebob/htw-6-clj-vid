@@ -2,6 +2,20 @@
 
 Handoff notes are recorded here by agents as handoffs are received and sent.
 
+## 2026-06-06 11:37:33 CDT - Sent QA Complete Handoffs
+
+Complete handoff message sent to specifier, coder, cleaner, architect, and hardender:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: pending commit
+```
+
+Summary: QA completed final verification for `htw-shell-launch`; all required unit, property, acceptance, UI E2E, CRAP, and DRY checks passed after a small QA-owned DRY cleanup in CLI tests.
+
 ## 2026-06-05 13:52:16 CDT
 
 Sent handoff to architect.
@@ -410,6 +424,20 @@ branch name: swarmforge-QA
 
 Action taken: Re-read specifier role and constitution; merged the named QA state into `master` and recorded this handoff.
 
+## 2026-06-05 15:39:06 CDT - Sent QA Complete Handoff
+
+Message sent to specifier, coder, cleaner, architect, and hardender:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 27d865d235
+```
+
+Summary: QA completed final verification for htw-shell-launch and committed shell game loop fixes plus UI E2E coverage.
+
 ## 2026-06-05 15:15:52 CDT - Sent QA Complete Handoff
 
 Message sent to specifier, coder, cleaner, architect, and hardender:
@@ -423,6 +451,22 @@ branch name: swarmforge-QA
 ```
 
 Summary: QA completed final verification for task3-shooting and committed scripted UI checks for movement and shooting behavior.
+
+## 2026-06-06 11:41:56 CDT
+
+Queued QA handoff processed:
+
+```text
+Re-read your role and constitution.
+sender role: QA
+specifier handoff name: htw-shell-launch
+branch name: swarmforge-QA
+10-character commit hash: 019291aeea
+```
+
+Reason for note: message arrived while the approved random-events-hit-order coder handoff was in progress; processed after sending that handoff.
+
+Action taken: merged the named QA state into `master`, resolved the append-only `logbook.md` conflict by preserving both histories, and applied no specifier-owned feature work to this QA handoff.
 
 ## 2026-06-05 15:29:34 CDT - Received Handoff
 
