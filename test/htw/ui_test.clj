@@ -22,12 +22,30 @@
   (let [moved (:state (ui/enter-command (configured-game 1 13 [14 15] [16 17]) "M 5"))
         won (ui/enter-command (configured-game 1 5 [14 15] [16 17]) "S 5")
         rejected (ui/enter-command (assoc (configured-game 1 13 [14 15] [16 17]) :arrows 5)
-                                   "x")]
+                                   "x")
+        bad-move (ui/enter-command (configured-game 1 13 [14 15] [16 17]) "m x")
+        huge-move (ui/enter-command (configured-game 1 13 [14 15] [16 17])
+                                    "m 999999999999999999999999999999999")
+        bad-shot (ui/enter-command (configured-game 1 13 [14 15] [16 17]) "s x")
+        huge-shot (ui/enter-command (configured-game 1 13 [14 15] [16 17])
+                                    "s 999999999999999999999999999999999")]
     (is (= 5 (:player-room moved)))
     (is (= :won (:status (:state won))))
     (is (some #{"AHA! YOU GOT THE WUMPUS!"} (:output won)))
     (is (= 1 (:player-room (:state rejected))))
-    (is (some #{"X IS NOT A COMMAND"} (:output rejected)))))
+    (is (some #{"X IS NOT A COMMAND"} (:output rejected)))
+    (is (some #{game/invalid-move-message} (:output bad-move)))
+    (is (some #{game/invalid-move-message} (:output huge-move)))
+    (is (some #{game/invalid-shot-message} (:output bad-shot)))
+    (is (some #{game/invalid-shot-message} (:output huge-shot)))))
+
+(deftest shot-commands-accept-comma-separated-paths
+  (let [comma-shot (ui/enter-command (configured-game 1 10 [14 15] [16 17]) "s 2,10")
+        mixed-shot (ui/enter-command (configured-game 1 10 [14 15] [16 17]) "s 2, 10")]
+    (is (= [2 10] (:arrow-visits (:state comma-shot))))
+    (is (some #{game/wumpus-hit-message} (:output comma-shot)))
+    (is (= [2 10] (:arrow-visits (:state mixed-shot))))
+    (is (some #{game/wumpus-hit-message} (:output mixed-shot)))))
 
 (deftest terminal-outcomes-include-taunts-and-replay-prompt
   (let [pit (ui/enter-command (configured-game 1 13 [2 15] [16 17]) "m 2")

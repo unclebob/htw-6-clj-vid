@@ -25,4 +25,4 @@ Feature: Arrow hit order
     Examples:
       | player_room | wumpus_room | pit_rooms | bat_rooms | starting_arrows | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | path        | expected_path | visited_rooms | message                  |
       | 1           | 2           | 14, 15    | 16, 17    | 5               | 1                    | 2                    | 14, 15             | 16, 17             | 5                        | 2, 1        | 2, 1          | 2             | AHA! YOU GOT THE WUMPUS! |
-      | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | 2, 10, 2, 1 | 2, 10, 2, 1   | 2, 10        | AHA! YOU GOT THE WUMPUS! |
+      | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | 2, 10, 9, 8, 1 | 2, 10, 9, 8, 1 | 2, 10        | AHA! YOU GOT THE WUMPUS! |

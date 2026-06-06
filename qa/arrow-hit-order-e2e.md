@@ -26,7 +26,7 @@ Verify through the user interface that an arrow stops when it hits the Wumpus, e
 
 1. Start `htw` with player room `1`, Wumpus room `10`, pit rooms `14, 15`, bat rooms `16, 17`, and `5` arrows.
 2. Enter `n`.
-3. Shoot path `2, 10, 2, 1`.
+3. Shoot path `2, 10, 9, 8, 1`.
 4. Verify the output includes `AHA! YOU GOT THE WUMPUS!`.
 5. Verify the output does not include `OOPS! ARROW GOT YOU!`.
 6. Verify documented observation output shows the arrow path ended at rooms `2, 10`.

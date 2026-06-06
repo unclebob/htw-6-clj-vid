@@ -18,10 +18,14 @@
    "WARNINGS: I SMELL A WUMPUS, BATS NEARBY, I FEEL A DRAFT"])
 
 (defn- parse-int [value]
-  (Long/parseLong value))
+  (when (re-matches #"\d+" value)
+    (try
+      (Long/parseLong value)
+      (catch NumberFormatException _
+        nil))))
 
 (defn- tokens [command]
-  (str/split (str/trim command) #"\s+"))
+  (remove str/blank? (str/split (str/trim command) #"[\s,]+")))
 
 (defn display-turn [state]
   (let [state (if (:arrows state) state (assoc state :arrows 5))
@@ -67,18 +71,22 @@
 
 (defn- move-command [state args]
   (if (= 1 (count args))
-    (let [moved (game/try-move-player state (parse-int (first args)))]
-      (if (:error moved)
-        (invalid-result state (:error moved))
-        (result moved [])))
+    (if-let [destination-room (parse-int (first args))]
+      (let [moved (game/try-move-player state destination-room)]
+        (if (:error moved)
+          (invalid-result state (:error moved))
+          (result moved [])))
+      (invalid-result state game/invalid-move-message))
     (invalid-result state "CAN'T MOVE THERE")))
 
 (defn- shoot-command [state args]
-  (let [path (mapv parse-int args)
-        shot (game/try-shoot-arrow state path)]
-    (if (:error shot)
-      (invalid-result state (:error shot))
-      (result shot []))))
+  (let [path (mapv parse-int args)]
+    (if (every? integer? path)
+      (let [shot (game/try-shoot-arrow state path)]
+        (if (:error shot)
+          (invalid-result state (:error shot))
+          (result shot [])))
+      (invalid-result state game/invalid-shot-message))))
 
 (defn- remember-setup [state]
   (if (:setup state)

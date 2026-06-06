@@ -11,8 +11,10 @@
 (def self-hit-message "OOPS! ARROW GOT YOU!")
 (def wumpus-bump-message "... OOPS! BUMPED A WUMPUS!")
 (def wumpus-got-you-message "TSK TSK TSK - WUMPUS GOT YOU!")
+(def missed-arrow-message "MISSED")
 (def out-of-arrows-message "YOU RAN OUT OF ARROWS")
 (def invalid-shot-message "CAN'T SHOOT THERE")
+(def crooked-arrow-message "ARROWS AREN'T THAT CROOKED - TRY ANOTHER ROOM")
 
 (defn- place-entities [room-order]
   (let [[player wumpus pit-a pit-b bat-a bat-b] room-order]
@@ -145,6 +147,14 @@
 (defn- legal-shot-length? [path]
   (<= 1 (count path) 5))
 
+(defn- too-crooked? [path]
+  (some true? (map = path (drop 2 path))))
+
+(defn- invalid-shot-error [path]
+  (cond
+    (not (legal-shot-length? path)) invalid-shot-message
+    (too-crooked? path) crooked-arrow-message))
+
 (defn- arrow-hit-result [state visits status message]
   (-> state
       (assoc :arrow-visits visits
@@ -152,11 +162,14 @@
       (append-message message)))
 
 (defn- missed-arrow-result [state visits]
-  (let [spent (update state :arrows dec)
+  (let [spent (-> state
+                  (append-message missed-arrow-message)
+                  (update :arrows dec))
         woken (wake-wumpus spent)
         exhausted? (and (zero? (:arrows woken))
                         (= :in-progress (:status woken)))]
     (cond-> (assoc woken :arrow-visits visits)
+      (= :lost (:status woken)) (append-message wumpus-got-you-message)
       exhausted? (assoc :status :lost)
       exhausted? (append-message out-of-arrows-message))))
 
@@ -183,8 +196,8 @@
 
 (defn try-shoot-arrow [state path]
   (let [state (normalize-state state)]
-    (if-not (legal-shot-length? path)
-      (assoc state :error invalid-shot-message)
+    (if-let [error (invalid-shot-error path)]
+      (assoc state :error error)
       (shot-result state (arrow/visits state path)))))
 
 (defn shoot-arrow [state path]

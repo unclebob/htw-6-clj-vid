@@ -43,11 +43,12 @@ Feature: Crooked arrow shooting
     And the arrow visits rooms <visited_rooms>
     And the player has <remaining_arrows> arrows
     And the game is <outcome>
+    And the player hears message <message>
 
     Examples:
-      | player_room | wumpus_room | pit_rooms | bat_rooms | starting_arrows | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | path   | expected_path | deviation_room | wake_choice | visited_rooms | remaining_arrows | outcome     |
-      | 1           | 13          | 14, 15    | 16, 17    | 5               | 1                    | 13                   | 14, 15             | 16, 17             | 5                        | 3, 4   | 3, 4          | 5              | stay        | 5, 4          | 4                | in progress |
-      | 10          | 20          | 2, 3      | 4, 5      | 5               | 10                   | 20                   | 2, 3               | 4, 5               | 5                        | 15, 16 | 15, 16        | 11             | stay        | 11, 12        | 4                | in progress |
+      | player_room | wumpus_room | pit_rooms | bat_rooms | starting_arrows | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | path   | expected_path | deviation_room | wake_choice | visited_rooms | remaining_arrows | outcome     | message |
+      | 1           | 13          | 14, 15    | 16, 17    | 5               | 1                    | 13                   | 14, 15             | 16, 17             | 5                        | 3, 4   | 3, 4          | 5              | stay        | 5, 4          | 4                | in progress | MISSED  |
+      | 10          | 20          | 2, 3      | 4, 5      | 5               | 10                   | 20                   | 2, 3               | 4, 5               | 5                        | 15, 16 | 15, 16        | 11             | stay        | 11, 12        | 4                | in progress | MISSED  |
 
   # Crooked arrow shooting 003
   Scenario Outline: Crooked arrow shooting 003: random deviation can hit the Wumpus
@@ -85,7 +86,7 @@ Feature: Crooked arrow shooting
     Examples:
       | player_room | wumpus_room | pit_rooms | bat_rooms | starting_arrows | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | path        | expected_path | visited_rooms | message               |
       | 1           | 13          | 14, 15    | 16, 17    | 5               | 1                    | 13                   | 14, 15             | 16, 17             | 5                        | 2, 1        | 2, 1          | 2, 1          | OOPS! ARROW GOT YOU! |
-      | 1           | 13          | 14, 15    | 16, 17    | 5               | 1                    | 13                   | 14, 15             | 16, 17             | 5                        | 2, 10, 2, 1 | 2, 10, 2, 1   | 2, 10, 2, 1   | OOPS! ARROW GOT YOU! |
+      | 1           | 13          | 14, 15    | 16, 17    | 5               | 1                    | 13                   | 14, 15             | 16, 17             | 5                        | 8, 9, 10, 2, 1 | 8, 9, 10, 2, 1 | 8, 9, 10, 2, 1 | OOPS! ARROW GOT YOU! |
 
   # Crooked arrow shooting 005
   Scenario Outline: Crooked arrow shooting 005: missed arrow wakes the Wumpus
@@ -102,12 +103,13 @@ Feature: Crooked arrow shooting
     And the player has <remaining_arrows> arrows
     And the Wumpus is in room <final_wumpus_room>
     And the game is <outcome>
+    And the player hears message <message>
 
     Examples:
-      | player_room | wumpus_room | pit_rooms | bat_rooms | starting_arrows | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | wake_choice | path | expected_path | visited_rooms | remaining_arrows | final_wumpus_room | outcome     |
-      | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | stay        | 5    | 5             | 5             | 4                | 10                | in progress |
-      | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | move to 2   | 5    | 5             | 5             | 4                | 2                 | in progress |
-      | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | move to 1   | 5    | 5             | 5             | 4                | 1                 | lost        |
+      | player_room | wumpus_room | pit_rooms | bat_rooms | starting_arrows | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | wake_choice | path | expected_path | visited_rooms | remaining_arrows | final_wumpus_room | outcome     | message |
+      | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | stay        | 5    | 5             | 5             | 4                | 10                | in progress | MISSED  |
+      | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | move to 2   | 5    | 5             | 5             | 4                | 2                 | in progress | MISSED  |
+      | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | move to 1   | 5    | 5             | 5             | 4                | 1                 | lost        | MISSED  |
 
   # Crooked arrow shooting 006
   Scenario Outline: Crooked arrow shooting 006: using the last arrow and missing loses
@@ -126,6 +128,7 @@ Feature: Crooked arrow shooting
 
     Examples:
       | player_room | wumpus_room | pit_rooms | bat_rooms | starting_arrows | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | wake_choice | path | expected_path | remaining_arrows | message               |
+      | 1           | 10          | 14, 15    | 16, 17    | 1               | 1                    | 10                   | 14, 15             | 16, 17             | 1                        | stay        | 5    | 5             | 0                | MISSED                |
       | 1           | 10          | 14, 15    | 16, 17    | 1               | 1                    | 10                   | 14, 15             | 16, 17             | 1                        | stay        | 5    | 5             | 0                | YOU RAN OUT OF ARROWS |
 
   # Crooked arrow shooting 007
@@ -146,3 +149,4 @@ Feature: Crooked arrow shooting
       | player_room | wumpus_room | pit_rooms | bat_rooms | starting_arrows | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | path                   | expected_path          | message           |
       | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | none                   | none                   | CAN'T SHOOT THERE |
       | 1           | 10          | 14, 15    | 16, 17    | 5               | 1                    | 10                   | 14, 15             | 16, 17             | 5                        | 2, 10, 11, 12, 13, 14 | 2, 10, 11, 12, 13, 14 | CAN'T SHOOT THERE |
+      | 1           | 13          | 14, 15    | 16, 17    | 5               | 1                    | 13                   | 14, 15             | 16, 17             | 5                        | 2, 10, 2, 1           | 2, 10, 2, 1           | ARROWS AREN'T THAT CROOKED - TRY ANOTHER ROOM |

@@ -92,10 +92,11 @@ Feature: Full game outcomes
         And the configured Wumpus wake choice is <expected_wake_choice>
         When the player enters command <command>
         Then the entered command is <expected_command>
+        And the output contains line <miss_message>
         And the output contains line <loss_message>
         And the output contains line <taunt_message>
         And the game is lost
 
         Examples:
-          | player_room | wumpus_room | pit_rooms | bat_rooms | arrows | wake_choice | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | expected_wake_choice | command | expected_command | loss_message          | taunt_message        |
-          | 1           | 10          | 14, 15    | 16, 17    | 1      | stay        | 1                    | 10                   | 14, 15             | 16, 17             | 1                        | stay                 | s 5     | s 5              | YOU RAN OUT OF ARROWS | HA HA HA - YOU LOSE! |
+          | player_room | wumpus_room | pit_rooms | bat_rooms | arrows | wake_choice | expected_player_room | expected_wumpus_room | expected_pit_rooms | expected_bat_rooms | expected_starting_arrows | expected_wake_choice | command | expected_command | miss_message | loss_message          | taunt_message        |
+          | 1           | 10          | 14, 15    | 16, 17    | 1      | stay        | 1                    | 10                   | 14, 15             | 16, 17             | 1                        | stay                 | s 5     | s 5              | MISSED       | YOU RAN OUT OF ARROWS | HA HA HA - YOU LOSE! |

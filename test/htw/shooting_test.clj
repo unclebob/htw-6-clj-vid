@@ -55,16 +55,23 @@
     (is (= 4 (:arrows miss)))
     (is (= 2 (:wumpus-room miss)))
     (is (= :in-progress (:status miss)))
+    (is (= [game/missed-arrow-message] (:messages miss)))
     (is (= :lost (:status eaten)))
+    (is (= [game/missed-arrow-message game/wumpus-got-you-message]
+           (:messages eaten)))
     (is (= 0 (:arrows out)))
     (is (= :lost (:status out)))
-    (is (= [game/out-of-arrows-message] (:messages out)))))
+    (is (= [game/missed-arrow-message game/out-of-arrows-message]
+           (:messages out)))))
 
 (deftest invalid-shot-is-rejected-without-spending-arrow
   (let [empty-shot (game/try-shoot-arrow (configured-game 1 10 {}) [])
-        long-shot (game/try-shoot-arrow (configured-game 1 10 {}) [2 10 11 12 13 14])]
+        long-shot (game/try-shoot-arrow (configured-game 1 10 {}) [2 10 11 12 13 14])
+        too-crooked (game/try-shoot-arrow (configured-game 1 13 {}) [2 10 2 1])]
     (is (= 5 (:arrows empty-shot)))
     (is (= :in-progress (:status empty-shot)))
     (is (= game/invalid-shot-message (:error empty-shot)))
     (is (= game/invalid-shot-message (:error long-shot)))
-    (is (= 5 (:arrows long-shot)))))
+    (is (= 5 (:arrows long-shot)))
+    (is (= game/crooked-arrow-message (:error too-crooked)))
+    (is (= 5 (:arrows too-crooked)))))

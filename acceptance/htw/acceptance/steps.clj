@@ -607,6 +607,9 @@
     "the output contains line <loss_message>"
     (assert-output-contains world (:loss_message example) "line")
 
+    "the output contains line <miss_message>"
+    (assert-output-contains world (:miss_message example) "line")
+
     "the output contains line <bat_message>"
     (assert-output-contains world (:bat_message example) "line")
 

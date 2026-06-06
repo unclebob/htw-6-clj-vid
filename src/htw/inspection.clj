@@ -60,14 +60,26 @@
 (defn- invalid-command [state action]
   (assoc state :error (str (str/upper-case (or action "")) " IS NOT A COMMAND")))
 
+(defn- parse-command-int [value label]
+  (when (re-matches #"\d+" value)
+    (try
+      (options/parse-int value label)
+      (catch NumberFormatException _
+        nil))))
+
 (defn- scripted-move [state args]
   (if (= 1 (count args))
-    (game/try-move-player state (options/parse-int (first args) "move room"))
+    (if-let [destination-room (parse-command-int (first args) "move room")]
+      (game/try-move-player state destination-room)
+      (assoc state :error game/invalid-move-message))
     (assoc state :error game/invalid-move-message)))
 
 (defn- scripted-shot [state args]
   (if (<= 1 (count args) 5)
-    (game/try-shoot-arrow state (mapv #(options/parse-int % "shot room") args))
+    (let [path (mapv #(parse-command-int % "shot room") args)]
+      (if (every? integer? path)
+        (game/try-shoot-arrow state path)
+        (assoc state :error game/invalid-shot-message)))
     (assoc state :error game/invalid-shot-message)))
 
 (defn- run-command [state command]

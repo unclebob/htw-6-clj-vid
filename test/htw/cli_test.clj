@@ -112,6 +112,7 @@
                             "--wumpus-wake" "stay"
                             "--commands" "s 3 4")]
     (assert-lines-contain lines ["ARROW PATH: 5, 4"
+                                 "MISSED"
                                  "ARROWS: 4"
                                  "STATUS: IN-PROGRESS"])))
 
@@ -139,9 +140,11 @@
                             "--pits" "14,15"
                             "--bats" "16,17"
                             "--arrows" "5"
-                            "--commands" "m;m 3;s;x")]
-    (is (some #{"CAN'T MOVE THERE"} lines))
-    (is (some #{"CAN'T SHOOT THERE"} lines))
+                            "--commands" (str "m;m 3;m x;m 999999999999999999999999999999999;"
+                                              "s 2 10 2 1;s;s x;s 999999999999999999999999999999999;x"))]
+    (is (= 4 (count (filter #{"CAN'T MOVE THERE"} lines))))
+    (is (= 3 (count (filter #{"CAN'T SHOOT THERE"} lines))))
+    (is (some #{"ARROWS AREN'T THAT CROOKED - TRY ANOTHER ROOM"} lines))
     (is (some #{"X IS NOT A COMMAND"} lines))
     (is (some #{"PLAYER: 1"} lines))
     (is (some #{"ARROWS: 5"} lines))))
@@ -200,6 +203,17 @@
     (assert-lines-contain eaten [game/wumpus-bump-message
                                  game/wumpus-got-you-message
                                  "HA HA HA - YOU LOSE!"])))
+
+(deftest shell-main-accepts-comma-separated-shot-path
+  (let [lines (shell-lines "n\ns 3,4\n"
+                           "--player" "1"
+                           "--wumpus" "13"
+                           "--pits" "14,15"
+                           "--bats" "16,17"
+                           "--arrow-deviation" "5"
+                           "--wumpus-wake" "stay")]
+    (assert-lines-contain lines [game/missed-arrow-message
+                                 "ARROWS LEFT: 4"])))
 
 (deftest shell-main-prints-safe-bat-transport-message
   (let [lines (shell-lines "n\nm 2\nm 11\n"
