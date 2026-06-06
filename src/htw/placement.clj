@@ -8,5 +8,5 @@
     (vec rooms)))
 
 ;; clj-mutate-manifest-begin
-;; {:version 1, :tested-at "2026-06-06T11:55:29.154918-05:00", :module-hash "-628445964", :forms [{:id "form/0/ns", :kind "ns", :line 1, :end-line 2, :hash "-907929487"} {:id "defn/seeded-room-order", :kind "defn", :line 4, :end-line 8, :hash "725131667"}]}
+;; {:version 1, :tested-at "2026-06-06T12:21:26.357821-05:00", :module-hash "-628445964", :forms [{:id "form/0/ns", :kind "ns", :line 1, :end-line 2, :hash "-907929487"} {:id "defn/seeded-room-order", :kind "defn", :line 4, :end-line 8, :hash "725131667"}]}
 ;; clj-mutate-manifest-end

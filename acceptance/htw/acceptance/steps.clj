@@ -78,6 +78,9 @@
             (first (parse-int-list (subs line (count "ARROW PATH:"))))))
         lines))
 
+(defn- observed-seed [lines]
+  (first-int-after "SEED: " lines))
+
 (defn- observed-random-room [event-type lines]
   (case event-type
     :bat-transport (first-int-after "PLAYER:" lines)
@@ -118,12 +121,21 @@
     (let [input (terminal-input (:terminal_input example))
           event-type (:random-event-type @world)
           base-options (:setup-options @world)
-          observed (mapv (fn [seed]
-                           (let [lines (shell-lines input (concat base-options ["--seed" (str seed)]))]
-                             (or (observed-random-room event-type lines)
-                                 (fail! (str "could not observe random room for seed " seed)))))
-                         (parse-int-list (:seeds example)))]
-      (swap! world assoc :observed-random-rooms observed))
+          runs (mapv (fn [seed]
+                       (let [lines (shell-lines input (concat base-options ["--seed" (str seed)]))]
+                         {:seed (or (observed-seed lines)
+                                    (fail! (str "could not observe seed for seed " seed)))
+                          :room (or (observed-random-room event-type lines)
+                                    (fail! (str "could not observe random room for seed " seed)))}))
+                     (parse-int-list (:seeds example)))]
+      (swap! world assoc
+             :observed-run-seeds (mapv :seed runs)
+             :observed-random-rooms (mapv :room runs)))
+
+    "the observed run seeds are <expected_seeds>"
+    (assert= (parse-int-list (:expected_seeds example))
+             (:observed-run-seeds @world)
+             "observed run seeds")
 
     "the observed bat transport rooms are within <legal_transport_rooms>"
     (let [legal (set (parse-int-list (:legal_transport_rooms example)))]
@@ -139,6 +151,16 @@
     (let [legal (set (parse-int-list (:legal_fallback_rooms example)))]
       (when-not (every? legal (:observed-random-rooms @world))
         (fail! (str "arrow fallback rooms outside legal set: " (:observed-random-rooms @world)))))
+
+    "the observed random rooms are <observed_rooms>"
+    (assert= (parse-int-list (:observed_rooms example))
+             (:observed-random-rooms @world)
+             "observed random rooms")
+
+    "exactly <distinct_room_count> distinct random rooms are observed"
+    (assert= (parse-int (:distinct_room_count example))
+             (count (set (:observed-random-rooms @world)))
+             "distinct random room count")
 
     "at least <minimum_distinct_rooms> distinct bat transport rooms are observed"
     (when (< (count (set (:observed-random-rooms @world)))
